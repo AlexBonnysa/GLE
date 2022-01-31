@@ -1,0 +1,4 @@
+﻿config
+Application/__pycache__
+Application/logs
+wsgi_scripts

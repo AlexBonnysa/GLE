@@ -1,0 +1,85 @@
+﻿{% extends "layout.html" %}
+{% block body %}
+{% with messages = get_flashed_messages()%}
+{%if messages %}
+
+{%for message in messages%}
+	<div class="alert alert-dismissible alert-info">
+		<button type="button" class="close" data-dismiss="alert">&times;</button>
+	  	<strong>Mensaje del Servidor: </strong>Evento de apertura de incidencia, <a href="#" class="alert-link">{{message}}</a>
+	</div>
+{% endfor %}
+
+{% endif %}
+{% endwith %}
+
+
+<div class="jumbotron"  >
+	<!--Botonera de incidencias-->
+	<div class="container"  >
+		<form action="/incidencia_contador" method="POST">
+			<!--Fila 1-->
+			<div class="row">
+				<div class="col-md-4">
+			     	<button type="submit" name ="description" value="Limpieza Recoger" class="btn btn-primary btn-xl">Limpieza/Recoger</button>
+			    </div>
+			    <div class="col-md-4">
+			    	<button type="submit" name ="description" value="Preparar Línea" class="btn btn-primary btn-xl">Preparar Línea</button>
+			    </div>
+			    <div class="col-md-4">
+			    	<button type="submit" name ="description" value="Mantenimiento Preventivo" class="btn btn-primary btn-xl">Mantenimiento Preventivo</button>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-4">
+			    	<button type="submit" name ="description" value="Mantenimiento Correctivo" class="btn btn-primary btn-xl">Mantenimiento Correctivo</button>
+				</div>
+				<div class="col-md-4">
+			    	<button type="submit" name ="description" value="Ajuste de Proceso" class="btn btn-primary btn-xl">Ajuste de Proceso</button>
+				</div>
+				<div class="col-md-4">
+			    	<button type="submit" name ="description" value="Ajuste mecánico" class="btn btn-primary btn-xl">Ajuste mecánico</button>
+			    </div>
+			</div>
+			<div class="row">
+				<div class="col-md-4">
+			    	<button type="submit" name ="description" value="Atasco mordaza" class="btn btn-primary btn-xl">Atasco mordaza</button>
+				</div>
+			</div>
+			  <input type="hidden" name="incidencia"  value="timeron" readonly><br><br>
+			  <input type="hidden" name="tipo"  value="D" readonly><br><br>
+			  <input type="hidden" name="name"  value="Incidnecia" readonly><br><br>
+
+			  
+			</form>
+	</div>
+</div>
+<div class="jumbotron">
+	<h3>Listado de incidencias abiertas</h3>
+	<table class="table table-hover">
+	  <thead>
+		<tr class="table-primary">
+		  <th scope="col">Incidencia</th>
+		  <th scope="col">Línea</th>
+		  <th scope="col">Fecha inicio</th>
+		  <th scope="col">Tipo</th>
+		  <th scope="col">Cerrar</th>
+		</tr>
+	  </thead>
+	  <tbody>
+		{% for login in logs %}
+		  <tr>
+			<td>{{ login.6 }}</td>
+			<td>{{ login.7 }}</td>
+			<td>{{ login.4 }}</td>
+			<td>{{ login.8 }}</td>
+			<td><a href="/closetimer2/{{login.0}}" class="btn btn-danger">Finalizar</a></td>
+		  </tr>
+		  {% endfor %}
+	  </tbody>
+	</table>
+  </div>
+
+
+  
+{% endblock %}

@@ -1,0 +1,66 @@
+﻿{% extends "layout.html" %}
+{% block body %}
+{% with messages = get_flashed_messages()%}
+{%if messages %}
+
+{%for message in messages%}
+	<div class="alert alert-dismissible alert-info">
+		<button type="button" class="close" data-dismiss="alert">&times;</button>
+	  	<strong>Mensaje del Servidor: </strong> <a href="#" class="alert-link">{{message}}</a>, revise que la información esté correcta en la tabla inferior.
+	</div>
+{% endfor %}
+
+
+{% endif %}
+{% endwith %}
+<div class="panel panel-default">
+<div class="panel-body">
+<H1 align="center" class="col-md-12" >Configuración</H1>
+<div >
+  <div class="row" style="text-align: center;">
+     <div class="col-md-3"></div>
+      <div class="col-md-1" style="margin-top: 8px;">
+          <h4>Líneas</h4>
+      </div>
+      <div class="col-md-3">
+        <input type="hidden" value={{ lineaActualSelect }} id="lineaTablet">
+        <select class="form-control" id="selLineas" name="selLineas" style=" height: 40px; font-size: 1.5em;">
+          {% for lin in lineasDev %}
+            <option id="{{ lin.4 }}" value="{{ lin.4 }}">{{ lin.1 }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-1">
+        <button class="btn btn-primary" onclick="updateLinea()"> Aceptar</button>
+      </div>
+    </div>
+  
+</div>
+</div>
+<script>
+  setTimeout(function(){ 
+       var lineaActual = $("#lineaTablet").val();
+       var idSelect = 'selLineas';
+       $('#'+idSelect+' > option[value='+lineaActual+']').attr('selected', 'selected');
+  },200) 
+
+  function updateLinea(){
+    let lineaActualA = $("#lineaActual").text();
+    let lineaNueva = $("#selLineas").val();
+		let json = {"lineaNueva": lineaNueva}
+    $.ajax({
+			url: 'updateLinea',
+			method: 'POST',
+			contentType: "application/json",
+			data: JSON.stringify({json}),
+			success: function(result) {
+			  console.log('Linea actualizada correctamente');
+        getLinea();
+			}
+		});
+  }
+ </script>
+</div>
+{% endblock %}
+
+

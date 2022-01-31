@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+{% block body %}
+{% with messages = get_flashed_messages()%}
+{%if messages %}
+
+{%for message in messages%}
+	<div class="alert alert-dismissible alert-info">
+		<button type="button" class="close" data-dismiss="alert">&times;</button>
+	  	<strong>Mensaje del Servidor: </strong>Usuario <a href="#" class="alert-link">{{message}}</a>, revise que la información esté correcta en la tabla inferior.
+	</div>
+{% endfor %}
+
+{% endif %}
+{% endwith %}
+<p style="text-align:center;"><img src="{{url_for('static', filename='img/LogoCliente.jpg')}}" width="50%" alt="Logo cliente"></p>
+
+	<div class="row">
+		<div class="col-md-3"></div>
+		<div class="col-md-6">
+			<form action="/login" method="POST">
+				<div class="form-group">
+			     	<h3>Código de Usuario</h3>
+			     	<input type="password" class="form-control"  placeholder="Número de referencia de usuario" name="usercode">
+			    </div>
+			</form>
+		</div>
+		<div class="col-md-3"></div>
+	</div>
+	<div class="jumbotron">
+		<h3>Listado de usuarios activos</h3>
+		<table class="table table-hover">
+			<thead>
+				<tr class="table-primary">
+				    <th scope="row">Cod.Operario</th>
+				    <th scope="col">Línea</th>
+				    <th scope="col">Log Out</th>
+			    </tr>
+		    </thead>
+		    <tbody>
+		    	{% for login in logs %}
+		    		<tr>
+		    			<td>{{ login.3 }}</td>
+		    			<td>{{ login.4 }}</td>
+		    			<td><a href="/logout/{{login.0}}" class="btn btn-danger">LogOut</a> </td>
+		    		</tr>
+		    	{% endfor %}
+		    </tbody>
+		</table>
+	</div>
+
+
+	{% if error %}
+    	<p class="error"><strong>Error:</strong> {{ error }}
+	{% endif %}
+    
+
+{% endblock %}

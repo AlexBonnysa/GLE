@@ -1,0 +1,158 @@
+﻿{% extends "layout.html" %}
+{% block body %}
+
+{% with messages = get_flashed_messages()%}
+  {%if messages %}
+
+    {%for message in messages%}
+      <div class="alert alert-dismissible alert-info">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+          <strong>Mensaje del Servidor: </strong> <a href="#" class="alert-link">{{message}}</a>, revise que la información esté correcta en la tabla inferior.
+      </div>
+    {% endfor %}
+
+  {% endif %}
+{% endwith %}
+  
+<h1 align="center" class="col-md-12">Asignación de pedido a Líneas</h1>
+  <div class="jumbotron">
+    <h3>Pedido Seleccionado</h3>
+    <table class="table table-hover">
+      <thead>
+        <tr class="table-primary">
+          <th scope="col">Código Pedido</th>
+          <th scope="col">Nº de Palets original</th>
+          <th scope="col">Cliente</th>
+          <th scope="col">COM</th>
+          <th scope="col">Palets Restantes por asignar</th>
+          <th scope="col">Crear</th>
+        </tr>
+      </thead>
+      <tr>
+      {% for selec in selection %}
+          <td>{{ selec.1 }}</td>
+          <td>{{ selec.4 }}</td>
+          <td>{{ selec.7 }}</td>
+          <td>{{ selec.3 }}</td>
+          <td>{{ selec.5 }}</td>
+      {% endfor %}
+          <td><button type="number" name="pedido" data-toggle="modal" data-target="#Editmodal" class="btn btn-primary">Crear</button></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="jumbotron">
+    <h3>OFs Asociadas</h3>
+    <table class="table table-hover">
+	
+      <thead>
+        <tr class="table-primary">
+	      <th scope="col"></th>
+        <th scope="col">Código Pedido</th>
+        <th scope="col">Estado</th>
+        <th scope="col">Palets asignados</th> 
+        <th scope="col">Cajas</th>
+        <th scope="col">Cliente</th>
+        <th scope="col">COM</th>
+        <th scope="col">Descripción</th>
+        <th scope="col">Línea</th>
+        <th scope="col">Pend. Fabricar</th>
+        <th scope="col">Editar</th>
+        <th scope="col"></th>
+        <th scope="col">Borrar</th>
+        <th scope="col"></th>
+        </tr>
+      </thead>
+      {% for pedido in pedidos %}
+      <form action="/select_line" method="POST" >
+      <tr>
+	  <td><input type="hidden" name="id"  value="{{ pedido.0}}" readonly><br></td>
+          <td>{{ pedido.1 }}</td>
+          <td>{{ pedido.5 }}</td>
+          <td><input type="number" class="form-control" value="{{ pedido.6 }}" name="palets">
+          <td>{{ pedido.18 }}</td>
+          <td>{{ pedido.25 }}</td>
+          <td>{{ pedido.4 }}</td>
+          <td>{{ pedido.2 }}</td>
+          <td><select class="form-control col-md-12" name ="linea" placeholder="Selección de Línea">
+              <option value="{{ pedido.23 }}">{{ pedido.23}}</option>
+              <option value="997">997</option>
+	            <option value="999">999</option>
+              <option value="15">15</option>
+              <option value="16">16</option>
+              <option value="17">17</option>
+              <option value="36">36</option>
+              <option value="38">38</option>
+              <option value="39">39</option>
+            </select></td>
+          <td>{{ pedido.3 }}</td>
+          <td><button type="number" name="action" value="edit" class="btn btn-warning">Aplicar</button></td>
+          {% for selec in selection %}
+            <td><input type="hidden" name="idpedido"  value="{{ selec.0}}" readonly><br></td>
+          {% endfor %}
+          <td><button type="number" name="action" value="erase" class="btn btn-danger">Borrar</button></td>
+      </tr>
+      
+      </form>
+{% endfor %}
+    </table>
+  </div>
+
+<!-- Modal Crear -->
+<div class="modal fade" id="Editmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="EditmodallLabel">Creación de OFs</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="/select_line" method="POST" >
+          <h3>Pedido Seleccionado</h3>
+          {% for selec in selection %}
+            <input type="hidden" name="id"  value="{{ selec.0 }}" readonly><br><br>
+            <h5>Código Pedido: {{ selec.1 }}</h5>
+            <input type="hidden" name="pedido"  value="{{ selec.1 }}" readonly><br><br>
+            <h5>COM: {{ selec.3 }}</h5>
+            <h5>Palets Restantes: {{ selec.5 }}</h5>
+            <h5>Cliente: {{ selec.7 }}</h5>
+            <h5>Fecha de Carga: {{ selec.11 }}</h5>
+            <h5>Fecha de producción: {{ selec.13 }}</h5>
+            <input type="hidden" name="fecha_carga"  value="{{ selec.11 }}" readonly>
+            <input type="hidden" name="fecha_produccion"  value="{{ selec.13 }}" readonly>
+            <input type="hidden" name="lote_cliente"  value="{{ selec.18 }}" readonly>
+            <input type="hidden" name="cliente"  value="{{ selec.7 }}" readonly><br><br>
+            <input type="hidden" name="com"  value="{{ selec.3 }}" readonly><br><br>
+            <h5>Descripción: {{ selec.14 }}</h5>
+            <input type="hidden" name="desc"  value="{{ selec.14 }}" readonly><br><br>
+            <input type="hidden" name="cajas"  value="{{ selec.16 }}" readonly><br><br>
+            <select class="form-control col-md-12" name ="linea" placeholder="Selección de Línea">
+              <option value="15">Línea 15</option>
+              <option value="16">Línea 16</option>
+              <option value="17">Línea 17</option>
+              <option value="36">Línea 36</option>
+              <option value="38">Línea 38</option>
+              <option value="39">Línea 39</option>
+              <option value="997">997</option>
+	            <option value="999">Servidor</option>
+            </select>
+            <input type="number" class="form-control" value="{{ selec.5 }}" name="palets"> 
+            <input type="hidden" name="action"  value="create" readonly><br><br>
+            <input type="hidden" name="ruta"  value="{{ selec.17 }}" readonly><br><br> 
+          {% endfor %}
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit"  class="btn btn-primary">Crear</button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+
+ 

@@ -1,0 +1,377 @@
+﻿{% extends "layout.html" %}
+{% block body %}
+{% with messages = get_flashed_messages()%}
+{%if messages %}
+
+{%for message in messages%}
+	<div class="alert alert-dismissible alert-info">
+		<button type="button" class="close" data-dismiss="alert">&times;</button>
+	  	<strong>Mensaje del Servidor: </strong>Error de selección, <a href="#" class="alert-link">{{message}}</a>
+	</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+{%if ficheros > 0 %}
+	<div class="container-fluid"  >
+		<div class="row">
+			<div style="height: 400px; " class="overflow-auto">
+				<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+					<div class="carousel-inner">						
+							{%for ficheros in range(ficheros)%}
+								{%if ficheros == 0 %}
+									<div class="carousel-item active">							
+								{% else %}
+									<div class="carousel-item">	
+								{% endif %}
+									<img class="d-block w-100" src="../static/proceso/{{ruta}}/IMG{{ruta}}_{{ficheros}}.jpg">
+								</div>
+							{% endfor %}			
+					</div>
+					<a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+					<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+					<span class="sr-only">Previous</span>
+					</a>
+					<a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+					<span class="carousel-control-next-icon" aria-hidden="true"></span>
+					<span class="sr-only">Next</span>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+{% else %}
+	<h1 style="text-align: center;">SELECCIONE OF PARA MOSTAR FICHA TÉCNICA. SI YA LA HA SELECCIONADO CONSULTA AL DPTO DE IT </h1>
+{% endif %}	
+
+	<div class="container">
+		<div id = "recolectar" class="col-md-10 offset-md-1">
+		
+		</div>
+	</div>
+	<div class = "mettler__response" id="mettler-response" style="justify-content: center;">
+		<div class = "ligth__container" id="main_1">
+			<div class = "ligth__onoff">
+				<div class = "ligth_load" id="main"></div>
+			</div>
+			<p>Pesadora</p>
+		</div>
+		<div class = "ligth__container" id="aux_1">
+			<div class = "ligth__onoff">
+				<div class = "ligth_load" id="aux1"></div>
+			</div>
+			<p>Destrío</p>
+		</div>
+	</div>
+<div class="jumbotron"  >
+	<!--Botonera de incidencias-->
+	<div class="container"  >
+		<div class="row">
+			<!--Botonera de Ok-->
+			<div class="col-md-12">
+				<form action="/add_ok" method="POST">
+					<button type="submit" name ="Register" value="registrook" class="btn btn-success btn-lg btn-xl">Palet Terminado</button>
+				</form>
+			</div>
+		</div>
+		<form action="/add_incidencia" method="POST">			
+			<!--Fila 1-->
+			<div class="row">
+
+				<div class="col-md-4">
+					{% if incs[0].8 != 'nulo' %}
+					<button type="submit" name ="incidencia" value="incidencia1" class="btn btn-primary btn-xl">{{incs[0].8}}</button>
+					{% else %}
+						<button type="submit" name ="incidencia" value="incidencia1" class="btn btn-primary btn-xl"disabled></button>
+					{% endif %}
+			    </div>
+			    <div class="col-md-4">
+			    	{% if incs[0].9 != 'nulo' %}
+						<button type="submit" name ="incidencia" value="incidencia2" class="btn btn-primary btn-xl">{{incs[0].9}}</button>
+					{% else %}
+						<button type="submit" name ="incidencia" value="incidencia2" class="btn btn-primary btn-xl"disabled></button>
+					{% endif %}
+			    </div>
+			    <div class="col-md-4">
+			    	{% if incs[0].10 != 'nulo' %}
+						<button type="submit" name ="incidencia" value="incidencia3" class="btn btn-primary btn-xl">{{incs[0].10}}</button>
+					{% else %}
+						<button type="submit" name ="incidencia" value="incidencia3" class="btn btn-primary btn-xl"disabled></button>
+					{% endif %}
+			    </div>
+			  </div>
+			  <!--Fila 2-->
+			  <div class="row">
+				<div class="col-md-4">
+					{% if incs[0].11 != 'nulo' %}
+					<button type="submit" name ="incidencia" value="incidencia4" class="btn btn-primary btn-xl">{{incs[0].11}}</button>
+					{% else %}
+						<button type="submit" name ="incidencia" value="incidencia4" class="btn btn-primary btn-xl"disabled></button>
+					{% endif %}
+			    </div>
+			    <div class="col-md-4">
+			    	{% if incs[0].12 != 'nulo' %}
+						<button type="submit" name ="incidencia" value="incidencia5" class="btn btn-primary btn-xl">{{incs[0].12}}</button>
+					{% else %}
+						<button type="submit" name ="incidencia" value="incidencia5" class="btn btn-primary btn-xl"disabled></button>
+					{% endif %}
+			    </div>
+			    <div class="col-md-4">
+			    	{% if incs[0].13 != 'nulo' %}
+						<button type="submit" name ="incidencia" value="incidencia6" class="btn btn-primary btn-xl">{{incs[0].13}}</button>
+					{% else %}
+						<button type="submit" name ="incidencia" value="incidencia6" class="btn btn-primary btn-xl"disabled></button>
+					{% endif %}
+			    </div>
+			  </div>
+			  <!--Fila 3-->
+			  <div class="row">
+				<div class="col-md-4">
+					{% if incs[0].14 != 'nulo' %}
+					<button type="submit" name ="incidencia" value="incidencia7" class="btn btn-primary btn-xl">{{incs[0].14}}</button>
+					{% else %}
+						<button type="submit" name ="incidencia" value="incidencia7" class="btn btn-primary btn-xl"disabled></button>
+					{% endif %}
+			    </div>
+			    <div class="col-md-4">
+					{% if incs[0].15 != 'nulo' %}
+						<button type="submit" name ="incidencia" value="incidencia8" class="btn btn-primary btn-xl">{{incs[0].15}}</button>
+					{% else %}
+						<button type="submit" name ="incidencia" value="incidencia8" class="btn btn-primary btn-xl"disabled></button>
+					{% endif %}
+			    </div>
+			    <div class="col-md-4">
+			    	{% if incs[0].16 != 'nulo' %}
+						<button type="submit" name ="incidencia" value="incidencia9" class="btn btn-primary btn-xl">{{incs[0].16}}</button>
+					{% else %}
+						<button type="submit" name ="incidencia" value="incidencia9" class="btn btn-primary btn-xl"disabled></button>
+					{% endif %}
+			    </div>
+			  </div>
+	 	</form>
+	 	<!--Fila 3-->
+			  <div class="row">
+				<div class="col-md-4">
+					<button type="submit" name ="incidencia" class="btn btn-warning btn-xl"  onclick="window.location='/incidencia_contador';">Otras incidencias</button>
+			    </div>
+			    <div class="col-md-4">
+			    	
+			    </div>
+			    <div class="col-md-4">
+					<button type="submit" name ="incidencia" class="btn btn-warning btn-xl"  onclick="window.location='/add_incidencia';">Incidencia Particular</button>
+			    </div>
+			  </div>
+			
+	</div>
+	
+</div>
+
+<div id="gifSonido" style="text-align: center; margin-top: 100px;">
+	<button type="button" id ="bt_descartar"  class="btn btn-primary">DESCARTAR</button>
+	<br>
+	<br>
+	<h3 style="color: cornflowerblue;">LA LÍNEA ESTÁ ACTIVA SIN ORDEN DE FABRICACIÓN</h3>
+	<br>
+	<img src="{{url_for('static', filename='img/hora.png')}}"   alt="Logo cliente">
+</div>
+<div>
+	<audio id="audio" controls muted autoplay style="visibility: hidden;">
+		<source src="{{url_for('static', filename='audio/musical023.mp3')}}"  type="audio/mp3">
+	</audio>
+</div>
+
+<script>
+    $(document).ready(function(e) {
+		$('.carousel').carousel()
+        getState()
+		getStatusOf()
+		//recolectarDatos();
+		recolectarDatosScada()
+		setInterval(function(){
+			 getState(); 
+			 getStatusOf();
+			 
+		}, 10000);
+		setInterval(function(){
+			//recolectarDatosScada()
+		}, 60000);
+       
+    });
+
+	function recolectarDatosScada()
+	{
+		$.ajax({
+                url: '/recolectarDatosScada',
+                method: 'GET',
+                dataType: "json",
+				beforeSend: function(){
+					$("#recolectar").html('<IMG class="displayed" src="static/img/ajax-loader.gif"/>');
+				},              
+                success: function(result) {
+					if (result.ofs==1){
+						setTimeout(function(){ recolectarDatosScada(); }, 60000);
+						var tabla = "<table class='table'>";
+							tabla += "<tr>";
+								tabla+="<td>";
+									tabla+="Paquetes por minuto: "+Math.round(result.paquetesPorMinuto * 100) / 100
+								tabla+="</td>";
+								tabla+="<td>";
+									tabla+="Paquete min Real OF turno: "+Math.round(result.paqueteMinRealOfTurno * 100) / 100
+								tabla+="</td>";
+								tabla+="<td>";
+									tabla+="Sobrepeso OF turno: "+Math.round(result.sobrepeso * 100) / 100+"%"
+								tabla+="</td>";
+							tabla += "</tr>";
+							tabla += "<tr>";
+								tabla+="<td>";
+									tabla+="Paq Hechos: "+result.paquetes
+								tabla+="</td>";
+								tabla+="<td>";
+									tabla+="Tiempo Of: "+result.tiempoOf
+								tabla+="</td>";
+								tabla+="<td>";
+									tabla+=""
+								tabla+="</td>";
+							tabla += "</tr>";
+							tabla += "<tr>";
+								tabla+="<td>";
+									tabla+=""
+								tabla+="</td>";
+								tabla+="<td>";
+									tabla+=""
+								tabla+="</td>";
+								tabla+="<td>";
+									tabla+=""
+								tabla+="</td>";
+							tabla += "</tr>";
+							tabla+= "</table>";
+						$("#recolectar").html(tabla);
+					}
+					else{
+						$("#recolectar").html("");
+						setTimeout(function(){ window.location = "{{ url_for('of') }}"; }, 60000);						
+					}
+				              
+                }
+            })
+	}
+
+	function recolectarDatos()
+	{
+		$.ajax({
+                url: '/recolectarDatos',
+                method: 'GET',
+                dataType: "json",              
+                success: function(result) {
+					if (result.ofs==1){
+						var tabla = "<table class='table'>";
+							tabla += "<tr>";
+								tabla+="<td>";
+									tabla+="Paquetes: "+result.paquetes
+								tabla+="</td>";
+								tabla+="<td>";
+									tabla+="Peso Paquete: "+result.pesoPaquete
+								tabla+="</td>";
+								tabla+="<td>";
+									tabla+="Paq Min Teor: "+result.paqueteMinimoTeorico
+								tabla+="</td>";
+							tabla += "</tr>";
+							tabla += "<tr>";
+								tabla+="<td>";
+									tabla+="Paq Hechos: "+result.paquetesHechos
+								tabla+="</td>";
+								tabla+="<td>";
+									tabla+="Peso Medio Paq: "+Math.round(result.pesoMedioPaquete * 100) / 100+ " / "+Math.round(result.porPesoMedioPaquete * 100) / 100+"%"
+								tabla+="</td>";
+								tabla+="<td>";
+									tabla+="Paq Min Of: "+Math.round(result.paqMinOf * 1000) / 1000
+								tabla+="</td>";
+							tabla += "</tr>";
+							tabla += "<tr>";
+								tabla+="<td>";
+									tabla+="T Marcha OF: "+Math.round(result.tiempoMarchaOf * 100) / 100+" minutos"
+								tabla+="</td>";
+								tabla+="<td>";
+									tabla+="% Realizado: "+Math.round(result.porRealizado * 100) / 100+"%"
+								tabla+="</td>";
+								tabla+="<td>";
+									tabla+="Tiempo Restante(Horas): "+Math.round(result.tiempoRestante * 100) / 100
+								tabla+="</td>";
+							tabla += "</tr>";
+							tabla+= "</table>";
+						$("#recolectar").html(tabla);
+					}
+					else{
+						$("#recolectar").html("");
+					}
+				              
+                }
+            })
+	}
+
+    function getState() {
+        $.ajax({
+            url: "/getState",
+            type: "GET",
+            success: function(result) {
+                for(let r of result.data) {
+                    switch(r[0]) {
+                        case 1:
+                            if(r[1] == 1) {
+                                document.getElementById("main").setAttribute("class","ligth_on");
+                            } else {
+                                document.getElementById("main").setAttribute("class","ligth_off");
+                            }
+                            break;
+                        case 2:
+                            if(r[1] == 1) {
+                                document.getElementById("aux1").setAttribute("class","ligth_on");
+                            } else {
+                                document.getElementById("aux1").setAttribute("class","ligth_off");
+                            }
+                            break;
+                        default:
+                            break;    
+                    }
+                }
+            }
+        });
+    }
+	$(document).on('click','#bt_descartar',function(){
+			$(".jumbotron").show();
+			$("#gifSonido").hide();
+			stop()
+    });
+
+	function play(){
+		var audio = document.getElementById("audio");
+		audio.muted = false;
+		audio.play();
+	}
+	function stop(){
+		var audio = document.getElementById("audio");
+		audio.pause();
+		audio.currentTime = 0
+	}
+
+	function getStatusOf() {
+        $.ajax({
+            url: "/getStatusOf",
+            type: "GET",
+            success: function(result) {
+				//alert(result);
+				if(result == 0){
+					$(".jumbotron").hide();
+					$("#gifSonido").show();
+					play();
+				}else{
+					$(".jumbotron").show();
+					$("#gifSonido").hide();
+					stop()
+				}
+            }
+        });
+    }
+
+</script>
+
+{% endblock %}

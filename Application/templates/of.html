@@ -1,0 +1,224 @@
+﻿{% extends "layout.html" %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="../static/css/jquery.dataTables.css">  
+<script type="text/javascript" charset="utf8" src="../static/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" charset="utf8" src="../static/js/dataTables.rowReorder.min.js"></script>
+<link rel="stylesheet" href="../static/css/rowReorder.dataTables.min.css" />
+{% endblock %}
+{% block body %}
+{% with messages = get_flashed_messages()%}
+{%if messages %}
+
+{%for message in messages%}
+	<div class="alert alert-dismissible alert-info">
+		<button type="button" class="close" data-dismiss="alert">&times;</button>
+	  	<strong>Mensaje del Servidor: </strong>OF <a href="#" class="alert-link">{{message}}</a>, revise que la información esté correcta en la tabla inferior.
+	</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+<p style="text-align:center; padding-top: 35px; padding-bottom: 0px;"><img style="height:8em;width: 20em;" src="{{url_for('static', filename='img/LogoCliente.jpg')}}" width="50%" alt="Logo cliente"></p>
+<div class="jumbotron" style="padding-top: 0;">
+	<h3>Orden de fabricación seleccionada</h3>
+
+	<table  class="table table-hover">
+		<thead>
+			<tr class="table-primary">
+				<th scope="col">Orden Fabricación</th>
+				<th scope="col">Cliente</th>
+				<th scope="col">Fecha Carga</td>
+				<th scope="col">Fecha Producción</td>
+				<th scope="col">Producto</td>
+				<th scope="col">Lote Cliente</td>
+				<th scope="col">Pallets</td>
+				<th scope="col">Cajas</td>
+				<th scope="col">COM</td>				
+				<th scope="col">Inicio</td>
+				<th scope="col">Fin</td>
+			</tr>
+		</thead>
+		<tbody>
+		{% for of in ofs %}
+		    <tr>
+				<td>{{ of.4 }}</td>
+				<td>{{ of.12 }}</td>
+				<td>{{ of.13 }}</td>
+				<td>{{ of.14 }}</td>
+				<td>{{ of.17 }}</td>
+				<td>{{ of.15 }}</td>
+				<td>{{ of.3 }}</td>
+		    	<td>{{ of.7 }}</td>
+		    	<td>{{ of.6 }}</td>						    		
+				<td><a href="/closepof/{{of.0}}" class="btn btn-warning">Parcial</a></td>
+				<td><button type="button" class="btn btn-danger" data-toggle="modal" data-target="#Editmodal">Total</button></td>
+				<!--td><a href="/closetof/{{of.0}}" class="btn btn-danger">Total</a-->
+				<!-- Modal -->
+				<div class="modal fade" id="Editmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+					<div class="modal-dialog" role="document">
+	  					<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="EditmodallLabel">Cierre total de OF</h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								  <span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
+								<label>¿Está seguro de cerrar totalmente la OF?</label></br>
+								<label>Quedan <strong>{{of.3}}</strong> Pallets por terminar</label>
+								<label>Esta operacion no tiene posibilidad de ser corregida </label>
+							</div>
+							<div class="modal-footer">
+			  					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+								<a href="/closetof/{{of.0}}" class="btn btn-danger"> Total</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				</td>
+		    </tr>
+		{% endfor %}
+		</tbody>
+	</table>
+</div>
+
+<div class="jumbotron" style="padding-top: 5px;">
+	<h3>Listado Ordenes de fabricación asignadas</h3>
+	<table id = "of-table" class="table table-hover">
+		<thead>
+			<tr class="table-primary">
+				<!--th scope="col">ID</th-->
+				<th scope="col">Orden</td>
+				<th scope="col">ID</td>
+				<th scope="col">Orden Fabricación</th>
+				<th scope="col">Cliente</th>
+				<th scope="col">Fecha Carga</td>
+				<th scope="col">Fecha Producción</td>
+				<th scope="col">Producto</td>
+				<th scope="col">Lote Cliente</td>
+				<th scope="col">Pallets</td>
+				<th scope="col">Cajas</td>
+				<th scope="col">COM</td>
+			   
+				<th scope="col">Seleccionar</td>
+				<th scope="col">Borrar</td>
+			</tr>
+		</thead>
+		<tbody>
+		{% for ofa in ofas %}
+		    <tr>
+		    	<form >
+					<td class='reorder'>{{ ofa.30 }}</td>
+					<td class='reorder'>{{ ofa.0 }}</td>
+			    	<td class='reorder'>{{ ofa.1 }}</td>
+					<td class='reorder'>{{ ofa.25 }}</td>
+					<td class='reorder'>{{ ofa.27 }}</td>
+					<td class='reorder'>{{ ofa.28 }}</td>
+					<td class='reorder'>{{ ofa.31 }}</td>
+					<td class='reorder'>{{ ofa.29 }}</td>
+					<td class='reorder'>{{ ofa.3 }}</td>
+			    	<td class='reorder'>{{ ofa.18 }}</td>
+			    	<td class='reorder'>{{ ofa.4 }}</td>	
+					<!--td><button name="ofcode" value="{{ ofa.0 }}" class="btn btn-success">Iniciar</button></td-->
+					<td><a href="/checklist/{{ofa.0}}" class="btn btn-success">Iniciar</a></td>
+					<td><button type="button" class="btn btn-danger" data-toggle="modal" data-target="#Editmodal{{ ofa.0 }}">Borrar</button></td>
+				</form>
+					<!-- Modal -->
+					<div class="modal fade" id="Editmodal{{ ofa.0 }}" tabindex="-1" role="dialog" aria-hidden="true">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="EditmodallLabel">Borrar OF asignada</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="modal-body">
+									<form action="/select_line" method="POST" >
+									<label>¿Está seguro de borrar la OF? </label></br>
+									<label>Esta operacion no tiene posibilidad de ser corregida </label>
+										
+											<input type="hidden" name="action"  value="erase2" readonly>
+											<input type="hidden" name="id"  value="{{ ofa.0 }}" readonly>
+											<input type="hidden" name="idpedido"  value="{{ ofa.22 }}" readonly>
+											<input type="hidden" name="palets"  value="{{ ofa.3 }}" readonly>
+										
+								
+										<div class="modal-footer">
+											<button type="button" class="btn btn-secondary" data-dismiss="modal">Retroceder</button>
+											<button type="submit"  class="btn btn-danger">Borrar</button>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+					</td>
+				
+		    </tr>
+			{% endfor %}
+		    	
+		</tbody>
+	</table>
+</div>
+{% if error %}
+    <p class="error"><strong>Error:</strong> {{ error }}
+{% endif %}
+
+<script>
+$(document).ready(function(){
+
+	function updateOrden(id, newData){
+		$.ajax({
+            url: "modposition",
+            method: "GET",
+            data: {id:id, newData:newData},
+            success : function(result) {
+
+			}
+		});
+	}
+	
+	var table = $('#of-table').DataTable( {
+		rowReorder: {
+            selector: 'td.reorder',
+        },
+        columnDefs: [
+            { targets: [0,1], visible: false } 
+        ],
+		"paging": false,
+		"language": {
+          "sProcessing":    "Procesando...",
+          "sLengthMenu":    "Mostrar _MENU_ registros",
+          "sZeroRecords":   "No se encontraron resultados",
+          "sEmptyTable":    "Ningún dato disponible en esta tabla",
+          "sInfo":          "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+          "sInfoEmpty":     "Mostrando registros del 0 al 0 de un total de 0 registros",
+          "sInfoFiltered":  "(filtrado de un total de _MAX_ registros)",
+          "sInfoPostFix":   "",
+          "sSearch":        "Buscar:",
+          "sUrl":           "",
+          "sInfoThousands":  ",",
+          "sLoadingRecords": "Cargando...",
+          "oPaginate": {
+              "sFirst":    "Primero",
+              "sLast":    "Último",
+              "sNext":    "Siguiente",
+              "sPrevious": "Anterior"
+          }
+		}
+    });
+
+	table.on( 'row-reorder', function ( e, diff, edit ) {
+        var result = 'Reorder started on row: '+edit.triggerRow.data()[1]+'<br>';
+        for ( var i=0, ien=diff.length ; i<ien ; i++ ) {
+            var rowData = table.row( diff[i].node ).data();
+ 
+            result += rowData[1]+' updated to be in position '+
+                diff[i].newData+' (was '+diff[i].oldData+')<br>'; 
+				updateOrden(rowData[1], diff[i].newData)      
+			 }
+    } );
+
+})
+</script>
+{% endblock %}

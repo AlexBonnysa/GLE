@@ -1,0 +1,20 @@
+.tableheader {
+    display: flex;
+justify-content: space-between;
+flex: 1;
+height: 3rem;
+align-items: center;
+font-weight: 900;
+font-size: 15px;
+padding: 1rem;
+}
+
+.tablebody {
+    display: flex;
+flex: 1;
+justify-content: space-between;
+align-content: center;
+padding: 1rem;
+font-size: 15px;
+cursor: move;
+}

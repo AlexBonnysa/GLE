@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<div class = "jumbotron">
+    <table class="table table-hover" >
+      <thead>
+        <tr class="table-primary">
+          <td scope="col">Articulo</td>
+          <td scope="col">Nombre</td>
+          <td scope="col">Cantidad</td>
+          <td scope="col">Unidades</td>
+          <td scope="col">Checkbox</td>
+        </tr>
+      </thead>
+      {% for part in parts %}
+          <tr>
+            <td>{{ part.2 }}</td>
+            <td>{{ part.7 }}</td>
+            <td>{{ part.3 }}</td>
+            <td>{{ part.4 }}</td>
+            <td> 
+              <!--div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input"  id="{{ part.2 }}" >
+                <label class="custom-control-label" for="{{ part.2 }}">Marcar que se dispone de material</label>
+              </div-->
+              <div class="btn-group btn-group-toggle" data-toggle="buttons">
+               
+                <label class="btn btn-primary active">
+                  <input type="checkbox" autocomplete="off"> Marcar que se dispone de material
+                </label>
+              </div>
+            </td>
+
+          </tr>
+      {% endfor %}
+    </table>
+        
+    <div class="container">
+
+    <div class="row">
+      <form action="/of" method="POST" class = "col">
+        <button name="ofcode" value="{{ idof }}" class="btn btn-success col-lg-5">Iniciar</button>
+      </form>
+      
+      <form class = "col">
+          <!--button onclick="goBack()" class="btn btn-warning col-lg-5">Retroceder</button-->
+          <button onclick="goBack()" class="btn btn-warning col-lg-5">Retroceder</button>
+          <!--input type="hidden" name="ofcode"  value="0" readonly><br><br-->
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  function goBack() {
+    window.history.back();
+  }
+  </script>
+		
+{% endblock %}

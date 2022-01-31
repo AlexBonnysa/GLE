@@ -1,0 +1,122 @@
+{% extends "layout.html" %}
+{% block head %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<label>Hello!</label>
+<style>
+.mettler__response {
+    display: flex;
+    height: 20px;
+}
+.ligth__container {
+    display:flex;
+    flex-direction: column;
+    padding: 20px;
+}
+.ligth__onoff {
+    display:flex;
+    justify-content:center;
+}
+.ligth_on {
+    background-color: green;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+.ligth_off {
+    background-color: red;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+.ligth_load {
+    background-color: orange;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+</style>    
+{% endblock %}
+ 
+{% block body %}
+
+<div class = "mettler__response" id="mettler-response">
+    <div class = "ligth__container" id="l15">
+        <div class = "ligth__onoff">
+            <div class = "ligth_load" id="ligth-15"></div>
+        </div>
+        <p>Línea 15</p>
+    </div>
+    <div class = "ligth__container" id="l16">
+        <div class = "ligth__onoff">
+            <div class = "ligth_load" id="ligth-16"></div>
+        </div>
+        <p>Línea 16</p>
+    </div>
+    <div class = "ligth__container" id="l39">
+        <div class = "ligth__onoff">
+            <div class = "ligth_load" id="ligth-39"></div>
+        </div>
+        <p>Línea 39</p>
+    </div>
+    <div class = "ligth__container" id="destrios">
+        <div class = "ligth__onoff">
+            <div class = "ligth_load" id="ligth-destrios"></div>
+        </div>
+        <p>Destríos</p>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function(e) {
+        getState()
+        setInterval(() => getState(), 10000);
+    });
+
+    function getState() {
+        $.ajax({
+            url: "/getState",
+            type: "GET",
+            success: function(result) {
+                for(let r of result.data) {
+                    switch(r[0]) {
+                        case 1:
+                            if(r[1] == 1) {
+                                document.getElementById("ligth-15").setAttribute("class","ligth_on");
+                            } else {
+                                document.getElementById("ligth-15").setAttribute("class","ligth_off");
+                            }
+                            break;
+                        case 2:
+                            if(r[1] == 1) {
+                                document.getElementById("ligth-16").setAttribute("class","ligth_on");
+                            } else {
+                                document.getElementById("ligth-16").setAttribute("class","ligth_off");
+                            }
+                            break;
+                        case 7:
+                            if(r[1] == 1) {
+                                document.getElementById("ligth-39").setAttribute("class","ligth_on");
+                            } else {
+                                document.getElementById("ligth-39").setAttribute("class","ligth_off");
+                            }
+                            break;
+                        case 9:
+                            if(r[1] == 1) {
+                                document.getElementById("ligth-destrios").setAttribute("class","ligth_on");
+                            } else {
+                                document.getElementById("ligth-destrios").setAttribute("class","ligth_off");
+                            }
+                            break;
+                        default:
+                            break;    
+                    }
+                }
+            }
+        });
+    }
+
+</script>
+
+{% endblock %}
+

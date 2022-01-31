@@ -1,0 +1,153 @@
+@import "./theme.css";
+
+body,html {
+    margin:0;
+    padding: 0;
+    background-color: var(--background-color);
+    font-size: var(--font-size);
+    font-family: var(--font-family);
+}
+
+.wrapper {
+    display:flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.header {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    flex:0.25;
+    background-color: var(--header-color);
+}
+
+.vl {
+    border-left: 1px solid white;
+    height: 100px;
+    
+  }
+
+.logo__header {
+    height: 150px;
+    
+}
+/* .containers */
+.containers{flex:3;}
+.container {
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    flex:12;
+    background-color: var(--background-color);
+}
+
+.info {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    flex:1;
+    background-color: var(--header-color);
+}
+
+#mytable_wrapper{
+    margin-top:20px;
+}
+table, td, th {  
+    border: 1px solid #ddd;
+    text-align: left;
+    width:100px;
+    max-width: 140px;
+    min-width: 100px;
+    font-size: var(--font-size);
+    padding-left: 2px !important;
+    padding-right: 2px !important;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    text-align: center;
+  }
+
+  .lote_tam{
+    min-width: 130px !important;
+    width:130px !important;
+  }
+
+  .select10,.select7, .input3{
+      max-width: 140px;
+  }
+  .ocultar{
+    display: none; 
+ /*   visibility: hidden; */
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+
+  }
+
+  th, td {
+    padding: 15px;
+
+  }
+  
+  .details-control {
+    text-align:center;
+    color:forestgreen;
+    cursor:pointer;
+  }
+  
+  .asign__check {
+    text-align: center;
+    /* center checkbox horizontally */
+    vertical-align: middle;
+    /* center checkbox vertically */
+  }
+
+  thead {
+      background-color:var(--thead-color);
+      color:white;
+  }
+
+  input[type=checkbox] {
+    transform: scale(2);
+}
+
+.modal-backdrop
+{
+    opacity:0.5 !important;
+}
+
+.btnopts {
+  margin:3px;
+}
+
+.dataTables_filter input { width: 250px; height: 50px; }
+
+.dataTables_scrollHeadInner{margin: 0 auto;}
+
+@media only screen and (max-width: 1280px) {
+  table,td,th {
+    font-size:var(--font-size-laptop);
+  }
+}
+
+.subtable tr:first-child td {
+  background-color: #C0C0C0;
+}
+
+.green {
+  background-color: #90EE90 !important;
+}
+
+.white {
+  background-color: white !important;
+}
+
+
+
+
+
+
+
+

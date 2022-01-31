@@ -1,0 +1,246 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>Digitalizacion Lineas Envasado</title>
+<!--
+<meta http-equiv="refresh" content="10">
+-->
+<head>
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/bootstrap.css')}}" media="screen" >
+<!--script type="text/javascript" src="static/js/jquery-3.3.1.min.js"></script-->
+<!--script  src="static/js/jquery-3.3.1.min.js"  crossorigin="anonymous"></script-->
+<script src="{{url_for('static', filename='js/jquery-3.3.1.min.js')}}" ></script>
+<!--<script type="text/javascript" src="../static/js/jquery-ui-1.12.1/jquery-ui-1.12.1/jquery-ui.min.js"></script>-->
+
+<style>
+	body {
+		margin-top: -20px;		
+	}
+.mettler__response {
+    display: flex;
+    height: 20px;
+}
+.ligth__container {
+    display:flex;
+    flex-direction: column;
+    padding: 20px;
+}
+.ligth__onoff {
+    display:flex;
+    justify-content:center;
+}
+.ligth_on {
+    background-color: green;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+.ligth_off {
+    background-color: red;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+.ligth_load {
+    background-color: orange;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.ui-sortable-handle {
+	cursor: move;
+}
+.alert.alert-dismissible.alert-info {	
+  	font-size: 1.4em;
+	padding-top: 25px;
+	height: 80px;
+}
+IMG.displayed {
+    display: block;
+	margin-top: 10px;
+	width: 100px;
+    margin-left: auto;
+    margin-right: auto 
+}
+</style>
+	{% block head %}
+	{% endblock %}
+</head>
+<body>   
+
+	
+	
+	
+	<div class="navbar navbar-expand-lg navbar-dark bg-primary">
+		{% if ofs %}
+			{% for of in ofs %}		    
+				<div class="col-md-2" style="padding-top: 0px; padding-bottom: 0%;">
+					<h5 style = "color:White;">Código de Pedido</h5>				
+					<h5 id="pedido_id" style = "color:White;"><strong>{{of.4}}</strong></h5>	´
+				
+				</div>
+				<div class="col-md-1" style="padding-top: 0px; padding-bottom: 0%;">
+					<h5 style = "color:White;">Modelo</h5>				
+					<h5 style = "color:White;"><strong>{{of.6}}</strong></h5>				
+				</div>
+				<div class="col-md-1" style="padding-top: 0px; padding-bottom: 0%;">
+					<h5 style = "color:White;">Producto</h5>				
+					<h5 style = "color:White;"><strong>{{of.17}}</strong></h5>				
+				</div>			
+				<div class="col-md-1" style="padding-top: 0px; padding-bottom: 0%;">
+					<h5 style = "color:White;">Pallets Iniciales</h5>				
+					<h5 style = "color:White;"><strong>{{of.9}}</strong></h5>				
+				</div>
+				<div class="col-md-2" style="padding-top: 0px; padding-bottom: 0%;">
+					<h5 style = "color:White;">Pallets Pendientes</h5>				
+					<h5 style = "color:White;"><strong>{{of.3}}</strong></h5>				
+				</div>
+				<div class="col-md-1" style="padding-top: 0px; padding-bottom: 0%;">
+					<h5 style = "color:White;">Lote</h5>				
+					<h5 style = "color:White;"><strong>{{of.15}}</strong></h5>				
+				</div>
+				<div class="col-md-1" style="padding-top: 0px; padding-bottom: 0%;">
+					<h5 style = "color:White;">Cajas</h5>				
+					<h5 style = "color:White;"><strong>{{of.7}}</strong></h5>				
+				</div>	
+				<div class="col-md-1" style="padding-top: 0px; padding-bottom: 0%;">
+					<h5 style = "color:White;"> <a href="{{ url_for('configuracion_linea') }}" style="color: white;">  Línea  <br> <span id="lineaActual"> </span> </a></h5>
+				</div>
+			   	
+			   <div class="col-md-1" style="padding-top: 0px; padding-bottom: 0%;">
+				   <h5 style = "color:White;">Operarios</h5>										
+				   <h5 style = "color:White;"><strong>{{operario}}</strong></h5>				
+			   </div>
+			   		  
+			{% endfor %} 
+		{% else %}
+			<div class="col-md-2 alig-self-center" style="padding-top: 0px; padding-bottom: 0%;">
+				<h5 style = "color:White;">Código de Pedido</h5>								
+			</div>
+			<div class="col-md-1" style="padding-top: 0px; padding-bottom: 0%;">
+				<h5 style = "color:White;">Modelo</h5>				
+							
+			</div>
+			<div class="col-md-2" style="padding-top: 0px; padding-bottom: 0%;">
+				<h5 style = "color:White;">Producto</h5>				
+							
+			</div>			
+			<div class="col-md-1" style="padding-top: 0px; padding-bottom: 0%;">
+				<h5 style = "color:White;">Pallets Iniciales</h5>				
+								
+			</div>
+			<div class="col-md-1" style="padding-top: 0px; padding-bottom: 0%;">
+				<h5 style = "color:White;">Pallets Pendientes</h5>				
+								
+			</div>
+			<div class="col-md-1" style="padding-top: 0px; padding-bottom: 0%;">
+				<h5 style = "color:White;">Lote</h5>		
+							
+			</div>
+			
+			<div class="col-md-1" style="padding-top: 0px; padding-bottom: 0%;">
+				<h5 style = "color:White;">Cajas</h5>				
+							
+			</div>
+		<div class="col-md-1" style="padding-top: 0px; padding-bottom: 0%;">
+			<h5 style = "color:White;"> <a href="{{ url_for('configuracion_linea') }}" style="color: white;">  Línea  <br> <span id="lineaActual"> </span> </a></h5>
+		</div>
+		<div class="col-md-1" style="padding-top: 0px; padding-bottom: 0%;">
+			<h5 style = "color:White;">Operarios</h5>										
+			<h5 style = "color:White;"><strong>{{operario}}</strong></h5>				
+		</div>
+		{% endif %}
+		
+    	
+    	<div class="col-md-1" style="padding-top: 0px; padding-bottom: 0%;">
+    		<img class="btn-group" role="group" id="btnGroupDrop1"  data-toggle="dropdown" src="{{url_for('static', filename='img/LogoMenu.png')}}" alt="Logo Menu"  width="40%"></img>
+			   	<div class="dropdown-menu" aria-labelledby="btnGroupDrop1" >
+			   		<a href="{{ url_for('Index') }}" style ="text-align: center;" class="list-group-item list-group-item-action" >Inicio</a>
+			   		<a href="{{ url_for('login') }}" style ="text-align: center;" class="list-group-item list-group-item-action">Fichajes</a>
+			   		<a href="{{ url_for('of') }}" style ="text-align: center;" class="list-group-item list-group-item-action">Orden Fabricación</a>
+			   		<a href="{{ url_for('destrio') }}" style ="text-align: center;" class="list-group-item list-group-item-action">Destrío</a>
+			   		<a href="{{ url_for('asignacion_general.Index') }}" style ="text-align: center;" class="list-group-item list-group-item-action">Asignación</a>
+					   <!-- <a href="{{ url_for('configuracion_linea') }}" style ="text-align: center;" class="list-group-item list-group-item-action">Configuración</a> -->
+					<a href="{{ url_for('fichajes_page.operarios') }}" style ="text-align: center;" class="list-group-item list-group-item-action">Fichado Aútomatico</a>
+					<a href="{{ url_for('kpi') }}" style ="text-align: center;" class="list-group-item list-group-item-action">KPI AOFS</a>
+					<a href="{{ url_for('kpiOfs') }}" style ="text-align: center;" class="list-group-item list-group-item-action">KPI POR OF</a>
+			   	</div>
+			
+    	</div>
+	    
+	   	
+	</div>
+	<div id="alert_estado" class="alert alert-danger" role="alert" style="display: none;">
+		Este pedido activo ha sido cancelado
+	</div>
+
+	
+	<!--señales-->
+	{% block body %}
+	{% endblock %}
+	
+<!--scripts-->
+
+<!--script  src="static/js/popper.min.js" crossorigin="anonymous"></script-->
+<script src="{{url_for('static', filename='js/popper.min.js')}}" crossorigin="anonymous"></script>
+<!--script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script-->
+<!--script type="text/javascript" href="{{url_for('static', filename='js/bootstrap.min.js')}}" media="screen"></script-->
+<!--script type="text/javascript" src="static/js/bootstrap.min.js"></script-->
+<!--script src="static/js/bootstrap.min.js" crossorigin="anonymous"></script-->
+<script src="{{url_for('static', filename='js/bootstrap.min.js')}}" crossorigin="anonymous"></script>
+<!--script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script-->
+<footer>
+	
+</footer>
+</body>
+</html>
+<script>
+ $(document).ready(function(e) {	
+	getEstado()
+    setInterval(() => getEstado(), 10000);
+ });
+
+ function getEstado() {
+	let valor = $( "#pedido_id" ).text();		
+	if (valor !== undefined && valor != "")
+	{
+		console.log(valor);	
+		let json = {"id": valor}
+		$.ajax({
+			url: '/getEstado',
+			method: 'POST',
+			contentType: "application/json",
+			data: JSON.stringify({json}),
+			success: function(result) {
+				if (result==='4')
+				{
+					$( "#alert_estado" ).show("slow")
+					
+				}
+				else
+				{
+					
+					$( "#alert_estado" ).hide()
+					
+				}
+			}
+		});
+	}
+ }
+ 
+ function getLinea() {
+		$.ajax({
+			url: '/getLinea',
+			method: 'GET',
+			contentType: "application/json",
+			success: function(result) {
+				$("#lineaActual").text(result);	
+			}
+		});
+	
+ }
+ getLinea();
+</script>

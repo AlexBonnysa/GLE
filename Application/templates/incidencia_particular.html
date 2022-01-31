@@ -1,0 +1,123 @@
+﻿{% extends "layout.html" %}
+{% block body %}
+{% with messages = get_flashed_messages()%}
+{%if messages %}
+
+{%for message in messages%}
+  <div class="alert alert-dismissible alert-info">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <strong>Mensaje del Servidor: </strong><a href="#" class="alert-link">{{message}}</a>
+  </div>
+{% endfor %}
+
+{% endif %}
+{% endwith %} 
+<h1 align="center" class="col-md-12">Registro de incidencia particular</h1>
+<div class="jumbotron" >
+  <form action="/add_incidencia" method="POST" >      
+    <div class="form-group">
+      <h1 >Nombre de la incidencia</h1>
+      <input type="text" class="form-control" name="name" placeholder="Defina brevemente un nombre para la incidencia">
+      <small class="form-text text-muted">El nombre solo es necesario en caso de incidencia por contador</small>
+    </div>
+    <div class="form-group">
+      <h1 >Descripción de la incidencia</h1>
+      <input type="text" class="form-control" name="description" placeholder="Introduzca aquí su texto">
+      <small class="form-text text-muted">Detalle la incidencia de la forma más clara posible</small>
+    </div>
+    <div class="row">
+      <h1 class = "col-md-12">Detalle de la incidencia</h1>
+      <select class="form-control col-md-3" name ="tipo" placeholder="Categoría">
+        <option value="D">Disponibilidad</option>
+        <option value="R">Rendimiento</option>
+        <option value="Q">Calidad</option>
+        <option value="M">Mantenimiento</option>
+        <option value="O">Otros</option>
+      </select>
+      <div class="col-md-1"></div>
+      <label class="col-form-label col-md-2" for="inputDefault"><h2>Horas: </h2>  </label>
+      <input type="number" name="hour"value = "0" class = "form-control col-md-1">
+      <div class="col-md-1"></div>
+      <label class="col-form-label col-md-2" for="inputDefault"><h2>Minutos: </h2></label>
+      <input type="number" name="min"  value = "0" class = "form-control col-md-1">
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <button type="submit" name ="incidencia" value="particular" class="btn btn-success btn-lg btn-xl">Registrar</button>
+        </div>
+        <div class="col-md-6">
+          <button  type="submit" name ="incidencia" value="timeron" class="btn btn-info btn-lg btn-xl">Contador</button>
+        </div>
+      </div>
+    </div>
+  </form> 
+</div>
+<div class="jumbotron">
+  <h3>Listado de incidencias abiertas</h3>
+  <table class="table table-hover">
+    <thead>
+      <tr class="table-primary">
+        <th scope="col">Incidencia</th>
+        <th scope="col">Línea</th>
+        <th scope="col">Fecha inicio</th>
+        <th scope="col">Tipo</th>
+        <th scope="col">Editar</th>
+        <th scope="col">Cerrar</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for login in logs %}
+        <tr>
+          <td>{{ login.11 }}</td>
+          <td>{{ login.7 }}</td>
+          <td>{{ login.4 }}</td>
+          <td>{{ login.8 }}</td>
+          <td><button type="button" class="btn btn-warning" data-toggle="modal" data-target="#Editmodal">Editar</button></td>
+          <!-- Modal -->
+<div class="modal fade" id="Editmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="EditmodallLabel">Modificación de la incidencia</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <form action="/modtimer" method="POST" >
+          <label for="country">ID de incidencia: {{ login.0 }}</label>
+          <input type="hidden" name="id"  value="{{ login.0 }}" readonly><br><br>
+          <h3 >Nombre de la incidencia</h3>
+            <input type="text" class="form-control" value="{{ login.11 }}" name="name" placeholder="Defina brevemente un nombre para la incidencia">
+          <h3 style = "margin-top: 10px;">Descripción de la incidencia</h3>
+          
+            <input type="text" class="form-control" value="{{ login.6 }}" name="description" placeholder="Introduzca aquí su texto">
+
+          <select class="form-control col-md-12" name ="tipo" placeholder="Categoría" value="{{ login.8 }}">
+            <option value="D">Disponibilidad</option>
+            <option value="R">Rendimiento</option>
+            <option value="Q">Calidad</option>
+            <option value="M">Mantenimiento</option>
+            <option value="O">Otros</option>
+          </select>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit"  class="btn btn-primary">Modificar</button>
+          </div>
+        </form>
+      
+      </div>
+      
+    </div>
+  </div>
+</div>
+          <td><a href="/closetimer/{{login.0}}" class="btn btn-danger">Finalizar</a></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

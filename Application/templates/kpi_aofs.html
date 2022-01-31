@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+
+{% block head %}
+
+
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div id= "kpi-listado" class="row">            
+        </div>
+    </div>   
+
+
+<script>
+    $(document).ready(function(e) {
+        listarKpis()
+        function listarKpis()
+        {                                   
+            $.ajax({
+                url: 'recolectarDatosKpiOf',
+                method: 'GET',
+                contentType: "application/json",
+                dataType: "json",                              
+                success: function(result) {
+                    $("#kpi-listado").html("")
+                    result.forEach(function(obj){
+                        var linea = ""
+                        linea +='<div class="col-sm-3">'
+                        linea +='<div class="card">'
+                        linea +='<div class="card-body">'
+                        linea +='<h5 style = "text-align: center;" class="card-title">Linea '+obj.linea+'</h5>'
+                        linea +='<p class="card-text">Ofid: '+obj.ofid+'</p> '
+                        linea +='<p class="card-text">Paquetes por minuto: '+Math.round(obj.paquetesporminuto * 100) / 100+' </p> '
+                        linea +='<p class="card-text">Paquete min Real OF turno: '+Math.round(obj.paqueteminrealofturno * 100) / 100 +'</p> '
+                        linea +='<p class="card-text">Sobrepeso OF turno: '+Math.round(obj.sobrepeso * 100) / 100+"%"+' </p> '
+                        linea +='<p class="card-text">Paq Hechos: '+obj.paquetes+' </p> '
+                        linea +='<p class="card-text">Tiempo Of: '+obj.tiempoof+' </p> '
+                        linea +='</div>'
+                        linea +='</div>'
+                        linea +='</div>'
+                        $("#kpi-listado").append(linea)
+                    })
+                    setTimeout(function(){ listarKpis(); }, 60000);
+                    
+                }
+            })
+            
+        }
+    });
+</script>
+
+{% endblock %}

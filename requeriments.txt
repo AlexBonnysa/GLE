@@ -1,0 +1,11 @@
+flask
+loguru
+psycopg2
+pandas
+numpy
+
+python-dotenv
+libpq-dev
+python-dev
+datetime
+

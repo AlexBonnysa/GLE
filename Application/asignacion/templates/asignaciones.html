@@ -1,0 +1,1497 @@
+﻿<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <title>Asignaciones</title>
+    <script type="text/javascript" src="/static/js/ajax.js"></script>
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>-->
+    <script type="text/javascript" src="/static/js/cdn_bootstrap.js"></script>
+    <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>-->
+    <script type="text/javascript" src="../static//js/cdn_datatables.js"></script>
+    <!--<script src="//cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>-->
+    <script type="text/javascript" src="../static//js/fontawesome.js"></script>
+    <!--<script src="https://kit.fontawesome.com/a076d05399.js"></script>-->
+    <link rel="stylesheet" href="../static/css/cdn_datatables.css" />
+    <!--<link rel="stylesheet" href="//cdn.datatables.net/1.10.10/css/jquery.dataTables.min.css"/>-->
+    <link rel="stylesheet" href="../static/css/cdn_fontawesome.css" />
+    <!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">-->
+    <script type="text/javascript" src="../static//js/datatables.js"></script>
+    <script type="text/javascript" src="../static//js/dataTables.rowReorder.min.js"></script>
+    <!--<script src="https://cdn.datatables.net/1.10.23/js/dataTables.bootstrap4.min.js"></script>-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../static/css/rowReorder.dataTables.min.css" />
+    <link rel="stylesheet" href="../static/css/table.css" />
+    <!--HERE-->
+    <style>
+      .hide_column {
+        display: none;
+      }
+    </style>
+  </head>
+
+<body style="overflow-x: hidden; ">
+    <div class="header" style="background-color:white;">
+      <a href = "{{ url_for('Index') }}">
+        <p style="text-align:center;"><img src="{{url_for('static', filename='img/LogoCliente.jpg')}}" width="30%" alt="Logo cliente"></p>
+      </a>
+    </div>
+    <div class="show-info"></div>
+    <div class="containers" style="margin-top:50px;margin-left:100px;margin-right:100px;">
+        <div class="container__header" style="width:100%;display:flex;justify-content:space-between;">
+            <h1>ASIGNACIONES</h1>
+            <button class="btn btn-primary text-nowrap" onClick="clearFilters()" type="button">
+              <span class="glyphicon glyphicon-refresh"></span>
+              Limpiar Filtros
+          </button>
+          <button type="button" class="btn btn-primary" id="showAll" style="display:none;">Abrir todas</button>
+          <button type="button" class="btn btn-primary" onclick="refresh()">Recarga forzada</button>
+          <button type="button" class="btn btn-warning bordered" onClick="showAsignModal()">ASIGNAR LÍNEA</button>
+        </div>
+        <div id="customers">
+
+          <div id="spinnerLoader" class="text-center">
+            <div class="spinner-border text-danger m-5" style="width: 5rem; height: 5rem;" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+          </div>
+
+           
+        </div>
+        <!--START MODAL-->
+        <div id="editModal" class="modal" role="dialog">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Edición de Asignaciones</h4>
+                  
+                </div>
+                <div class="modal-body">
+
+                <div class="row">
+                    <div class="col-sm-6">
+                      <label for="sel1">ID de pedido:</label>
+                    </div>
+                    <div class="col-sm-6">
+                    <input id="editID" class="form-control" type="text" readonly>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <label for="sel2">Palets pedidos:</label>
+                    </div>
+                    <div class="col-sm-6">
+                    <input id="editPedidos" class="form-control" type="text" readonly>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <label for="sel3">Palets asignados:</label>
+                    </div>
+                    <div class="col-sm-6">
+                    <input id="asignadosmaster" class="form-control" type="text" readonly>
+                    </div>
+                  </div>
+
+                  <hr>
+
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <label for="sel4">Línea asignada:</label>
+                    </div>
+                    <div class="col-sm-6">
+                      <form>
+                        <div class="form-group">
+                          <select class="form-control" id="sel5">
+                            <option id="11" value='11'>Línea 11</option>
+                            <option id="131" value='131'>Línea 13A</option>
+                            <option id="132" value='132'>Línea 13B</option>
+                            <option id="14" value='14'>Línea 14</option>
+                            <option id="15" value="15">Línea 15</option>
+                            <option id="16" value="16">Línea 16</option>
+                            <option id="17" value='17'>Línea 17</option>
+                            <option id="18" value='18'>Línea 18</option>
+                            <option id="211" value='211'>Línea 21A</option>
+                            <option id="212" value='212'>Línea 21B</option>
+                            <option id="26" value='26'>Línea 26</option>
+                            <option id="35" value="35">Línea 35</option>
+                            <option id="36" value="36">Línea 36</option>
+                            <option id="38" value="38">Línea 38</option>
+                            <option id="39" value="39">Línea 39</option>
+                            <option id="999" value="999">Servidor</option>
+                          </select>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <label>Palets asignados:</label>
+                    </div>
+                    <div class="col-sm-6">
+                      <input type="hidden" id="originalValue" name="originalValue" min="0" max="1000">
+                      <input type="number" id="editmouseup" name="editmouseup" min="0" max="1000">
+                    </div>
+                  </div>
+
+
+                </div>
+                <div class="modal-footer">
+                  <button id="editAsignacionButton" class="btn-modal btn btn-success" data-dismiss="modal">Editar asignación</button>
+                  <button type="button" class="btn-modal btn btn-danger" data-dismiss="modal">Cerrar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        <!--END MODAL-->
+
+        <!--START MODAL-->
+        <div id="deleteModal" class="modal" role="dialog">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Eliminar Asignación Parcial</h4>
+                                
+              </div>
+              <div class="modal-body">
+                <div class="alert alert-warning" role="alert">
+                  <strong>Info!</strong>  Al realizar esta operación, se eliminará asignación parcial realizada a la línea.
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button id="deleteOFButton" class="btn-modal btn btn-success" data-dismiss="modal">Eliminar asignación</button>
+                <button type="button" class="btn-modal btn btn-danger"  data-dismiss="modal">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--END MODAL-->
+
+        <!--START MODAL-->
+        <div id="recargaForzadaModal" class="modal" role="dialog">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Recarga fozada</h4>
+                                
+              </div>
+              <div class="modal-body">
+                <div class="alert alert-warning" role="alert">
+                  <strong>Info!</strong>  Estamos realizando una recarga forzada, espera unos instantes por favor.
+                </div>
+                <div class="text-center">
+                  <div class="spinner-border text-danger" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+
+                <button type="button" class="btn-modal btn btn-danger"  data-dismiss="modal">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--END MODAL-->
+
+        <!--START MODAL-->
+        <div id="lazyModal" class="modal" role="dialog">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Opps! Parece que has estado demasiado tiempo inactivo</h4>
+                                
+              </div>
+              <div class="modal-body">
+                <div class="alert alert-warning" role="alert">
+                  <strong>Info!</strong>  Te recomendamos actualizar y limpiar filtros para que todo vaya bien!
+                </div>
+
+              </div>
+              <div class="modal-footer">
+
+                <button id="lazyCancel" type="button" class="btn-modal btn btn-danger"  data-dismiss="modal">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--END MODAL-->
+
+        <!--START MODAL-->
+        <div id="asignModal" class="modal" role="dialog">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Asignación Directa</h4>
+                  
+                </div>
+                <div class="modal-body">
+
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <label for="sel1">Línea asignada:</label>
+                    </div>
+                    <div class="col-sm-6">
+                      <form>
+                        <div class="form-group">
+                          <select class="form-control" id="daSel" name="daSel">
+                            <option id="11" value='11'>Línea 11</option>
+                            <option id="131" value='131'>Línea 13A</option>
+                            <option id="132" value='132'>Línea 13B</option>
+                            <option id="14" value='14'>Línea 14</option>
+                            <option id="15" value="15">Línea 15</option>
+                            <option id="16" value="16">Línea 16</option>
+                            <option id="17" value='17'>Línea 17</option>
+                            <option id="18" value='18'>Línea 18</option>
+                            <option id="211" value='211'>Línea 21A</option>
+                            <option id="212" value='212'>Línea 21B</option>
+                            <option id="26" value='26'>Línea 26</option>
+                            <option id="35" value="35">Línea 35</option>
+                            <option id="36" value="36">Línea 36</option>
+                            <option id="38" value="38">Línea 38</option>
+                            <option id="39" value="39">Línea 39</option>
+                            <option id="999" value="999">Servidor</option>
+                          </select>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <label> Pedidos a asignar: </label>
+                    </div>
+
+                    <div class="col-sm-6">
+                      <ul class="list-group" id="adList">
+                        
+                      </ul>
+                    </div>
+                  </div>
+
+                </div>
+                <div class="modal-footer">
+                  <!--HERE-->
+                  <button id="adbutton_" class="btn-modal btn btn-success" data-dismiss="modal" >Asignar</button>
+                  <button type="button" class="btn-modal btn btn-danger" data-dismiss="modal" onClick="adClose()">Cerrar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        <!--END MODAL-->
+
+        <!--START MODAL PARTIAL ASIGN-->
+        <div id="asignPartialModal" class="modal" role="dialog">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Asignación Parcial</h4>
+                  
+                </div>
+                <div class="modal-body">
+
+                <div class="row">
+                    <div class="col-sm-6">
+                      <label for="sel1">Código de pedido:</label>
+                    </div>
+                    <div class="col-sm-6">
+                    <input id="apcodigopedido" class="form-control" type="text" readonly>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <label for="sel1">COM:</label>
+                    </div>
+                    <div class="col-sm-6">
+                    <input id="apcom" class="form-control" type="text" readonly>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <label for="sel1">Cliente:</label>
+                    </div>
+                    <div class="col-sm-6">
+                    <input id="apcliente" class="form-control" type="text" readonly>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <label for="sel1">Fecha de Carga:</label>
+                    </div>
+                    <div class="col-sm-6">
+                    <input id="apfechacarga" class="form-control" type="text" readonly>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <label for="sel1">Desripción:</label>
+                    </div>
+                    <div class="col-sm-6">
+                    <input id="apdescripcion" class="form-control" type="text" readonly>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <label for="sel1">Palets por asignar:</label>
+                    </div>
+                    <div class="col-sm-6">
+                    <input id="paletsPorAsignar" class="form-control" type="text" readonly>
+                    </div>
+                  </div>
+
+                  <hr>
+
+                  <div class = "row">
+                    <div class="col-sm-6">
+                      <button type="button" class="btn btn-primary"  id="addbutton" onClick="addForm()">+ Añadir asignación </button>
+                    </div>
+                    <div class="col-sm-6">
+                      <input type="hidden" id="click_counter" value="0"/>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-sm-12">
+                    <div class="forms"></div>
+                    </div>
+                  </div>  
+
+                </div>
+                <div class="modal-footer">
+                  <button id="apbutton" class="btn-modal btn btn-success" data-dismiss="modal">Asignar</button>
+                  <button type="button" class="btn-modal btn btn-danger" data-dismiss="modal">Cerrar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        <!--END MODAL-->
+    </div>
+    <table id="mytable" class="table  table-bordered">
+      <thead>
+          <tr>
+            
+          </tr>
+      </thead>
+      <tbody>
+      
+      </tbody>   
+  </table>
+  </body>
+  </html>
+  
+  <script>
+//HERE
+let counter = () => {
+        console.log("inicializando counter")
+        let alert = setInterval(() => {
+          
+          if(document.getElementById('lazyModal').className.includes('in')) {
+            clearInterval(alert)
+            console.log("limpio intervalo y reinicio")
+            counter()
+          } else {
+            showLazyModal()
+            console.log("muestro el modal")
+          } 
+        }, 1200000,$(document).click(function() {
+            clearInterval(alert)
+            console.log("Limpio intervalo y reinicio")
+            counter()
+          }));
+      }
+
+    
+   $(document).ready(function(){
+     $.ajax({
+       url: "getAsignacionesData",
+       method: 'GET',
+       success: function(result) {
+           let {data} = result
+            loadTable(data)
+            document.getElementById("spinnerLoader").remove()
+            }
+     })
+     //HERE
+     setTimeout(() => {
+      counter()
+     },1200000)
+   })
+
+   function loadTable(dataSet) {
+
+      var table = $('#mytable').DataTable( {
+        "language": {
+          "sProcessing":    "Procesando...",
+          "sLengthMenu":    "Mostrar _MENU_ registros",
+          "sZeroRecords":   "No se encontraron resultados",
+          "sEmptyTable":    "Ningún dato disponible en esta tabla",
+          "sInfo":          "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+          "sInfoEmpty":     "Mostrando registros del 0 al 0 de un total de 0 registros",
+          "sInfoFiltered":  "(filtrado de un total de _MAX_ registros)",
+          "sInfoPostFix":   "",
+          "sSearch":        "Buscar:",
+          "sUrl":           "",
+          "sInfoThousands":  ",",
+          "sLoadingRecords": "Cargando...",
+          "oPaginate": {
+              "sFirst":    "Primero",
+              "sLast":    "Último",
+              "sNext":    "Siguiente",
+              "sPrevious": "Anterior"
+          },
+          "oAria": {
+              "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+              "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+          }
+      },
+      /*"lengthMenu": [ 10, 25, 50, 500 ],
+      "pageLength":500,*/
+      "paging": false,
+      "columnDefs": [
+          {"className": "dt-center", "targets": "_all"},
+          { "width": "10", "targets": 0 },
+        /*   { 'visible': false, 'targets': [1,2] } */
+        ],
+      /*   scrollY: 1300, */
+        scrollX:true,
+        stateSave: true,
+        data: dataSet,
+        initComplete: function() {
+          var column = this.api().column(7);
+          var select = $('.select7')
+            .on('change', function() {
+              var val = $(this).val();
+              //column.search(val ? '^' + $(this).val() + '$' : val, true, false).draw();
+              column.search(val).draw()
+            });
+
+          var product = []; 
+          column.data().sort().toArray().forEach(function(s) {
+            s = s.split(',');
+            s.forEach(function(d) {
+              if (!~product.indexOf(d)) {
+                product.push(d)
+                select.append('<option value="' + d + '">' + d + '</option>');
+                }
+            })
+          })
+
+          var column2 = this.api().column(10);
+          var select2 = $('.select10')
+            .on('change', function () {
+              var val2 = $(this).val();
+              column2.search(val2).draw()
+            })
+
+            var client = [];
+            column2.data().sort().toArray().forEach(function(s) {
+                if(!~client.indexOf(s)) {
+                  client.push(s)
+                  select2.append('<option value="' + s + '">' + s + '</option>'); 
+                }
+
+            })
+
+          var column3 = this.api().column(17);
+          var select3 = $('.select12')
+            .on('change', function () {
+              var val = $(this).val();
+              column3.search(val).draw()
+            })
+
+            var estado = [];
+            column3.data().sort().toArray().forEach(function(s) {
+                if(!~estado.indexOf(s)) {
+                  estado.push(s)
+                  select3.append('<option value="' + s + '">' + s + '</option>'); 
+                }
+
+            })
+            /*column2.data().toArray().forEach(function(s) {
+              s = s.split(',');
+              s.forEach(function(d) {
+                if(!~client.indexOf(d)) {
+                  client.push(d)
+                  select2.append('<option value="' + d + '">' + d + '</option>'); 
+                }
+              })
+            })*/
+
+        },
+          columns: [
+            {
+              "title":'',
+              "className": 'asign__check',
+              "orderable" : false,
+                "data":null,
+                "defaultContent":'',
+                "render":function(data,row){
+                  if(parseInt(data[14]) <= 0) {
+                    return '<input id="'+data[2]+'" type="checkbox" disabled>'
+                  }
+                    return '<input id="'+data[2]+'" type="checkbox">'
+                },
+            },
+              { 
+              "title":'',
+              "className": 'details-control',
+              "orderable" : false,
+                "data":null,
+                "defaultContent":'',
+                "render":function(data){
+                  return `<i id="despl${data[2]}" class="fa fa-plus-square" aria-hidden="trued"></i>`
+                },
+              },
+              { title: "ID",   "className": 'ocultar' }, 
+              { title: "F. CARGA<br><input class='input3' type='date' placeholder='Buscar' data-index='3'/>",
+              "orderable": false },
+              { title: "F. ENTREGA<br><input class='input4' type='date' placeholder='Buscar' data-index='4'/>",
+              "orderable": false,
+              "className" : "hide_column"},
+              { title: "F. PRODUCCIÓN<br><input class='input5' type='date' placeholder='Buscar' data-index='5'/>",
+              "orderable": false,
+              "className" : "hide_column"},
+              { title: "Nº PEDIDO<br><input class='input6' size='10' type='text' placeholder='Buscar' data-index='6'/>",
+                  "className":"text-nowrap",
+                  "orderable": false },              
+              { title: "PRODUCTO<br><select class='select7'><option value='' selected></option></select>",
+                  "className":"text-nowrap",
+                  "orderable": false,
+                  "render":function(data,row){
+                    return '<span  title="' + data + '">' + data + '</span>';
+                  }
+                 },
+              { title: "ARTICULO<br><input class='input8' size='10' type='text' placeholder='Buscar' data-index='8'/>",
+                  "className":"text-nowrap",
+                  "orderable": false },
+              { title: "LOTE", "className" : "lote_tam"  },
+              { title: "CLIENTE<br><select class='select10'><option value='' selected></option></select>",
+                  "className":"text-nowrap",
+                  "orderable": false,
+                  "render":function(data,row){
+                    return '<span  title="' + data + '">' + data + '</span>';
+                },
+                },
+              { title: "PALETS PEDIDOS" },
+              { title: "CAJAS" },
+              { title: "LINEA ASIGNADA<br><input class='input13' size='10' type='text' placeholder='Buscar' data-index='13'/>" },
+              { title: "SIN ASIGNAR" },
+              { title: "TERMINADOS" },
+              { title: "PALETS ASIGNADOS" },
+              { title: "ESTADO<br><select class='select12'><option value='' selected></option></select>",
+                  "className":"text-nowrap",
+                  "orderable": false },
+              {
+                "title":"ASIGNACIÓN PARCIAL",
+                "orderable" : false,
+                "data":null,
+                "defaultContent":'',
+                "render":function(data){
+                  return `<button type="button" class="btn btn-warning bordered" onClick="showAsignPartialModal(${data[2]})">Asignación Parcial</button>`
+                },
+              },
+          ],
+          "fnCreatedRow": function(nRow, aData, iDataIndex) {
+            $(nRow).attr('id',`row${aData[2]}`)
+          },
+          "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            if (parseInt(aData[14]) <= 0) {
+              //document.getElementById(`row${aData[2]}`).style.backgroundColor = '#90EE90'
+              $('td',nRow).css('background-color', '#90EE90')
+            } else if(parseInt(aData[11]) > parseInt(aData[14])) {
+              $('td',nRow).css('background-color', '#E5BE01')
+            }
+          }
+      } ).columns.adjust();
+
+      
+      let btnshowAll = $('#showAll')
+      //btnshowAll.trigger('click')
+
+   
+
+      // Filter event handler
+    $( table.table().container() ).on( 'keyup change', 'thead input', function () {
+      console.group(this.value)
+        table
+            .column( $(this).data('index') )
+            .search( this.value )
+            .draw();
+    } );
+
+    // Restore state
+    var state = table.state.loaded();
+    if ( state ) {
+      table.columns().eq( 0 ).each( function ( colIdx ) {
+        var colSearch = state.columns[colIdx].search;
+        
+        
+        if ( colSearch.search ) {
+          $( '.input'+colIdx, table.column( colIdx ).footer() ).val( colSearch.search );
+          $( '.select'+colIdx, table.column( colIdx ).footer() ).val( colSearch.search );
+          //console.log(`Para la iteración ${colIdx} el valor es ${colSearch.search}`)
+        }
+      } );
+      
+      table.draw();
+    }
+
+
+   }
+
+    function format(d) {
+        var div = $('<div/>').addClass('loading').text('Loading...')
+        let id = parseInt(d[2])
+        let output =  `<table class="subtable" id="subtable${d[2]}">
+                  <tr id="sub${d[2]}"><td>CÓDIGO DE OF</td><td>ESTADO</td><td>PALETS ASIGNADOS</td><td>DESTRIO</td><td>DESCRIPCIÓN</td><td>LINEA</td><td>CANTIDAD</td><td>OPCIONES</td><td style="display:none;">IdOF</td></tr>`
+
+        $.ajax({
+            url: "getOfAsignacion",
+            method: "GET",
+            data: {data:id},
+            success : function(result) {
+                let {data} = result
+                let {index} = result
+
+                let tds = document.getElementById(`row${id}`).children
+                if(data.length > 0) {
+                  
+                    for(dt of data) {
+                      console.log(dt)
+                        output = output + `<tr id="subrow${index[data.indexOf(dt)]}"><td>${index[data.indexOf(dt)]}</td><td>${dt[0]}</td><td>${dt[1]}</td><td>${dt[2]}</td><td>${dt[3]}</td><td>${dt[4]}</td><td>${dt[5]}</td><td><button type="button" class="btn btn-warning bordered" onClick="showEditModal(${id},subrow${index[data.indexOf(dt)]},${index[data.indexOf(dt)]})">Editar</button><button type="button" class="btn btn-danger bordered btnopts" onClick="showDeleteModal(${id},subrow${index[data.indexOf(dt)]},${index[data.indexOf(dt)]})">Borrar</button></td><td style="display:none;">${index[data.indexOf(dt)]}</td></tr>`
+                        
+                        var table = $('#mytable').DataTable();
+                        if(table.cell(tds[13]).data() === "") {
+                            //table.cell(tds[13]).data(`LN${dt[4]}`)
+                          } /* else if(table.cell(tds[13]).data().includes(`LN${dt[4]}`)) {
+                            
+                          } */ else {
+                           // table.cell(tds[13]).data(table.cell(tds[13]).data() + ` - LN${dt[4]}`)
+                          }
+                          /*if(tds[13].innerHTML === "") {
+                            console.log(tds[13].innerHTML)
+                            console.log(`LN${dt[4]}`)
+                            tds[13].innerHTML = `LN${dt[4]}`
+                            console.log(tds[13].innerHTML)
+                          } else if(tds[13].innerHTML.includes(`LN${dt[4]}`)) {
+                            tds[13].innerHTML = tds[13].innerHTML
+                          } else {
+                            tds[13].innerHTML = tds[13].innerHTML + ` - LN${dt[4]}`
+                          }*/
+ 
+                      }
+
+                output = output + `</table>`
+                div.html(output).removeClass('loading')
+                } else {
+                    output = output + `</table>`
+                    div.html(output).removeClass('loading')
+                }
+            }
+        })
+
+        return div
+    }
+
+
+
+    /*$('#mytable tbody').on('click', 'td.details-control', function () {
+      var table = $('#mytable').DataTable();
+      var tr = $(this).closest('tr');
+      var tdi = tr.find("i.fa");
+      var row = table.row(tr);
+      
+      if(row.child.isShown()) {
+        row.child.hide();
+        tr.removeClass('shown');
+        tdi.first().removeClass('fa-minus-square');
+        tdi.first().addClass('fa-plus-square');
+      } else {
+        row.child(format(row.data())).show();
+        tr.addClass('shown');
+        tdi.first().removeClass('fa-plus-square');
+        tdi.first().addClass('fa-minus-square');
+      }
+    })*/
+
+    $('#mytable tbody').on('click', 'td.details-control', function () {
+      var table = $('#mytable').DataTable();
+    var tr = $(this).parents('tr');
+    var row = table.row( tr );
+ 
+    if ( row.child.isShown() ) {
+        // This row is already open - close it
+        row.child.hide();
+        tr.removeClass('shown');
+    }
+    else {
+        // Open this row (the format() function would return the data to be shown)
+        if(row.child() && row.child().length)
+        {
+            row.child.show();
+        }
+        else {
+            row.child( format(row.data()) ).show();
+        }
+        tr.addClass('shown');
+    }
+} );
+    
+    $("#editmouseup").bind('keyup mouseup',delay(function () {
+      let originalValue = parseInt(document.getElementById('originalValue').value)
+      let asignadosMaster = parseInt(document.getElementById('asignadosmaster').placeholder)
+      let newAsignacionValue = parseInt(document.getElementById('editmouseup').value)
+      let actualizedValue = (asignadosMaster - originalValue) + newAsignacionValue
+      document.getElementById('originalValue').value = newAsignacionValue
+      document.getElementById('asignadosmaster').placeholder = actualizedValue            
+    },125));
+
+    function delay(callback, ms) {
+      var timer = 0;
+      return function() {
+        var context = this, args = arguments;
+        clearTimeout(timer);
+        timer = setTimeout(function () {
+          callback.apply(context, args);
+        }, ms || 0);
+      };
+    }
+
+    function showLazyModal() {
+      $('#lazyModal').modal("show")
+    $('.form-horizontal').show();
+    }
+
+  function obtenerLineaActual(idSelect){
+      $.ajax({
+        url: 'getLinea',
+        method: 'GET',
+        contentType: "application/json",
+          data: JSON.stringify({partialAsign}),
+        success: function(result) {
+        //  alert(result)
+        $('#'+idSelect+' > option[value='+result+']').attr('selected', 'selected');
+        }
+      })
+    
+   }
+   function showAsignModal(){
+    
+     obtenerLineaActual('daSel')
+     let selected = []
+     $("input:checked").each(function () {
+       selected.push($(this).attr("id"))
+     })
+     let table = $('#mytable').DataTable()
+
+
+     for(select of selected) {
+      let tds = document.getElementById(`row${select}`).children
+
+      let li = document.createElement("li")
+      li.setAttribute("id", tds[2].innerHTML)
+      li.setAttribute("class", "list-group-item d-flex justify-content-between align-items-center")
+      let t = document.createTextNode(`Pedido ${tds[2].innerHTML}`)
+      li.appendChild(t)
+      li.value = tds[2].innerHTML
+
+      let span = document.createElement("span")
+      span.setAttribute("class","badge barge-primary barge-pill")
+      let ts = document.createTextNode(`${tds[14].innerHTML} Palets`)
+      span.appendChild(ts)
+      span.value = `${tds[14].innerHTML} Palets`
+
+      li.appendChild(span)
+      let ul = document.getElementById("adList")
+      ul.appendChild(li)
+     }
+     table.search('').draw()
+    $('#asignModal').modal("show")
+    $('.form-horizontal').show();
+
+    //HERE
+    document.getElementById("adbutton_").onclick = () => {
+      selected.map(select => {
+        document.getElementById(`subtable${select}`) === null? $(`#despl${select}`).trigger('click') : false
+      })
+        asignacionDirecta(); 
+          };
+
+   }
+
+   function asignacionDirecta() {
+     let ids = []
+     let select = document.getElementById("daSel")
+     let opt = select.value
+     let childs = document.getElementById("adList").children
+     for(child 
+     of childs) {
+       ids.push(child.value)
+     }
+     let obj = {"linea":opt,"pedidos":ids}
+
+     //LLAMADA AJAX POST
+     $.ajax({
+       url: 'asignaciondirecta',
+       method: 'POST',
+       contentType: "application/json",
+       data: JSON.stringify({obj}),
+       success: function(result) {
+         let {data} = result
+         let {index} = result
+         let {pedidos} = result
+         let erroneos = []
+        data.map((dato,i) => {
+          if(dato[0] == 'False') {
+            let tds = document.getElementById(`row${dato[1]}`).children
+            pedidos.map((pedido,index) => {
+              if(i == index) {
+                document.getElementById(`${dato[1]}`).disabled = true
+              
+                tds[14].innerHTML = pedido[5]
+                tds[16].innerHTML = parseInt(tds[11].innerHTML) - parseInt(tds[14].innerHTML)
+              }
+            })
+
+            let subtable = document.getElementById(`subtable${dato[1]}`)
+            subtable.className = "subtable"
+            let subrow = document.createElement('tr')
+            Array.from(subtable.getElementsByTagName('tr')).forEach(function(element){
+              return lastId = element.getAttribute("id")
+            })
+            subrow.setAttribute("id", `${lastId}-${i}`)
+
+            celdas = dato.slice(2)
+
+            let subcell = document.createElement('td')
+            let ts = document.createTextNode(index[i])
+            subcell.appendChild(ts)
+            subrow.appendChild(subcell)
+            subtable.appendChild(subrow)
+            
+            celdas.map(c => {
+              let subcell = document.createElement('td')
+              let ts = document.createTextNode(c)
+              subcell.appendChild(ts)
+              subrow.appendChild(subcell)
+              subtable.appendChild(subrow)
+            })
+
+            let options = document.createElement('td')
+
+            let edit = document.createElement('button')
+            edit.className="btn btn-warning bordered"
+            edit.addEventListener('click', () => showEditModal(dato[1],subrow,index[i]))
+            edit.appendChild(document.createTextNode('Editar'))
+            options.appendChild(edit)
+
+            let delbutt = document.createElement('button')
+            delbutt.className="btn btn-danger bordered btnopts"
+            delbutt.addEventListener('click', () => showDeleteModal(dato[1],subrow,index[i]))
+            delbutt.appendChild(document.createTextNode('Borrar'))
+            options.appendChild(delbutt)
+
+            subrow.appendChild(options)
+
+            let ids = []
+            Array.from(subtable.getElementsByTagName('tr')).forEach(function(element){
+              let tdsOF = element.children
+              ids.push(tdsOF[5].innerHTML)
+            })
+
+            ids.shift()
+            var table = $('#mytable').DataTable();
+            table.cell(tds[13]).data("")
+
+
+            ids.map(id => {
+              if(table.cell(tds[13]).data() === "") {
+                table.cell(tds[13]).data(`LN${id}`)
+              } else if(table.cell(tds[13]).data().includes(`LN${id}`)) {
+              } else {
+                table.cell(tds[13]).data(table.cell(tds[13]).data() + ` - LN${id}`)
+              }
+  
+            })
+
+            document.getElementById(`row${dato[1]}`).style.removeProperty('background-color')
+            let row = document.getElementById(`row${dato[1]}`)
+            Array.from(row.getElementsByTagName('td')).forEach(function(element) {
+            element.style.removeProperty('background-color')
+            })
+
+            row.style.backgroundColor = '#90EE90'
+            
+          } else {
+            erroneos.push(index[i])
+          }
+        })
+
+        if(erroneos.length == 0) {
+          $('.show-info').html('<div id="myAlert" class="alert alert-success"><a href="#" class="close" data-dimiss="alert" aria-label="close">&times;</a><strong>Info! </strong> Se han asignado las OFs de manera correcta</div>')
+        } else {
+          $('.show-info').html(`<div id="myAlert" class="alert alert-danger"><a href="#" class="close" data-dimiss="alert" aria-label="close">&times;</a><strong>Info! </strong> Ha habido un error asignando los pedidos ${[...erroneos]}</div>`) 
+        }
+        adClose()
+       }
+     })
+   }
+
+
+   function adClose() {
+     let ul = document.getElementById("adList")
+     while(ul.hasChildNodes()) {
+       ul.removeChild(ul.lastChild)
+     }
+     $("input:checked").each(function () {
+       document.getElementById($(this).attr("id")).checked = false
+     })
+   }
+
+   function showEditModal(idPedido,idRowOF,idOF) {
+    document.getElementById('editID').placeholder = idPedido
+    let tds = document.getElementById(`row${idPedido}`).children
+    let paletsPedidos = tds[11].innerHTML 
+    document.getElementById('editPedidos').placeholder = paletsPedidos
+    let asignadosMaster = tds[16].innerHTML
+    document.getElementById('asignadosmaster').placeholder = asignadosMaster
+
+    //let tdsOF = document.getElementById(idRowOF).children
+    let tdsOF = idRowOF.children
+    let lineaOF = tdsOF[7].innerHTML
+    let opts = document.getElementById('sel5').children
+    for(opt of opts) {
+      lineaOF == opt.value? document.getElementById(lineaOF).selected = true : false
+    }
+
+    document.getElementById('originalValue').value = tdsOF[2].innerHTML
+    document.getElementById('editmouseup').value = tdsOF[2].innerHTML
+
+    $('#editModal').modal("show");
+    $('.form-horizontal').show();
+
+    document.getElementById("editAsignacionButton").onclick = () => { 
+              editAsignacion(idPedido,idRowOF,idOF); 
+          };
+};
+
+function editAsignacion(idPedido,idRowOF,idOF) {
+  let linea = document.getElementById("sel5").value
+  let asignados = document.getElementById("editmouseup").value
+  let asignadosmaster = document.getElementById("asignadosmaster").placeholder
+  let tds = idRowOF.children
+  let obj = {"id": idPedido,"linea": linea, "asignados":asignados,"idOF": idOF, "originales": tds[2].innerHTML}
+  //LLAMADA AL POST DE EDICION
+  $.ajax({
+    url: 'editAsignacion',
+    method:'POST',
+    contentType: "application/json",
+    data: JSON.stringify({obj}),
+    success: function(result) {
+      let {data} = result
+      let {index} = result
+      let {pedidos} = result
+
+      data.map(dato => {
+        if(dato[0] == 'False') {
+          let tds = document.getElementById(`row${idPedido}`).children
+          
+          tds[14].innerHTML = pedidos[5]
+          tds[16].innerHTML = tds[11].innerHTML - tds[14].innerHTML
+
+          let tdsOF = idRowOF.children
+          tdsOF[0].innerHTML = index[0]
+          tdsOF[1].innerHTML = dato[2]
+          tdsOF[2].innerHTML = dato[3]
+          tdsOF[3].innerHTML = dato[4]
+          tdsOF[4].innerHTML = dato[5]
+          tdsOF[5].innerHTML = dato[6]
+          tdsOF[6].innerHTML = dato[7]
+
+          let subtable = document.getElementById(`subtable${idPedido}`)
+        let ids = []
+        Array.from(subtable.getElementsByTagName('tr')).forEach(function(element) {
+              let tdsOF = element.children
+              ids.push(tdsOF[5].innerHTML)
+            })
+          
+          ids.shift()
+          var table = $('#mytable').DataTable();
+          table.cell(tds[13]).data("")
+          //tds[13].innerHTML = ""
+
+          ids.map(id => {
+              if(table.cell(tds[13]).data() === "") {
+                table.cell(tds[13]).data(`LN${id}`)
+              } else if(table.cell(tds[13]).data().includes(`LN${id}`)) {
+              } else {
+                table.cell(tds[13]).data(table.cell(tds[13]).data() + ` - LN${id}`)
+              }
+            })
+
+        if(parseInt(tds[14].innerHTML) > parseInt("0") && parseInt(tds[14].innerHTML) < parseInt(tds[11].innerHTML)) {
+
+        document.getElementById(`row${idPedido}`).style.removeProperty('background-color')
+        let row = document.getElementById(`row${idPedido}`)
+        Array.from(row.getElementsByTagName('td')).forEach(function(element) {
+            element.style.removeProperty('background-color')
+          })
+          $(`#row${idPedido}`).css('background-color', '#E5BE01')
+        //$(`#row${idPedido}`).css('background-color', 'white')
+        document.getElementById(idPedido).disabled = false
+      } else if(parseInt(tds[14].innerHTML) <= 0) {
+        document.getElementById(`row${idPedido}`).style.removeProperty('background-color')
+        let row = document.getElementById(`row${idPedido}`)
+        Array.from(row.getElementsByTagName('td')).forEach(function(element) {
+            element.style.removeProperty('background-color')
+          })
+        //document.getElementById(`row${idPedido}`).style.backgroundColor = "#90EE90"
+        $(`#row${idPedido}`).css('background-color', '#90EE90')
+        document.getElementById(idPedido).disabled = true
+      } else {
+
+        document.getElementById(`row${idPedido}`).style.removeProperty('background-color')
+        let row = document.getElementById(`row${idPedido}`)
+        Array.from(row.getElementsByTagName('td')).forEach(function(element) {
+            element.style.removeProperty('background-color')
+          })
+        //$(`#row${idPedido}`).css('background-color', 'white')
+        document.getElementById(idPedido).disabled = false
+
+      }
+
+        $('.show-info').html('<div id="myAlert" class="alert alert-success"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Info! </strong>Se ha editado la OF de manera correcta</div>');
+
+        } else {
+          if(dato[1] === 0) {
+            $('.show-info').html('<div id="myAlert" class="alert alert-danger"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Info! </strong>Ha habido un error editando la OF</div>');
+          } else {
+            $('.show-info').html(`<div id="myAlert" class="alert alert-danger"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Info! </strong>${dato[1]}</div>`);
+          }
+            
+        }
+      })
+    }
+  })
+  
+  
+}
+
+function showDeleteModal(idPedido, idRowOF, idOF) {
+    $('#deleteModal').modal("show");
+    $('.form-horizontal').show();
+
+    document.getElementById('deleteOFButton').onclick = () => {
+      deleteAsignacion(idPedido,idRowOF,idOF)
+    }
+};
+
+function deleteAsignacion(idPedido,idRowOF,idOF) {
+
+$.ajax({
+  url: 'deleteAsignacion',
+  method: 'POST',
+  contentType: "application/json",
+       data: JSON.stringify({idOF}),
+  success: function(result) {
+
+    let {data} = result
+    let {pedidos} = result
+
+    data.map((dato,i) => {
+      if(dato[0] == 'False') {
+        let tds = document.getElementById(`row${idPedido}`).children
+
+        let tdsOF = idRowOF.children
+        tds[14].innerHTML = pedidos[5]
+        tds[16].innerHTML = tds[11].innerHTML - tds[14].innerHTML
+        
+
+
+
+        idRowOF.remove()
+      //document.getElementById(`subtable${idPedido}`).removeChild(idRowOF)
+
+      let subtable = document.getElementById(`subtable${idPedido}`)
+      let ids = []
+      Array.from(subtable.getElementsByTagName('tr')).forEach(function(element) {
+            let tdsOF = element.children
+            ids.push(tdsOF[5].innerHTML)
+          })
+        
+        ids.shift()
+        //tds[13].innerHTML = ""
+        var table = $('#mytable').DataTable();
+        table.cell(tds[13]).data("")
+
+        ids.map(id => {
+          
+              if(table.cell(tds[13]).data() === "") {
+                table.cell(tds[13]).data(`LN${id}`)
+              } else if(table.cell(tds[13]).data().includes(`LN${id}`)) {
+              } else {
+                table.cell(tds[13]).data(table.cell(tds[13]).data() + ` - LN${id}`)
+              }
+              /*if(tds[13].innerHTML === "") {
+                tds[13].innerHTML = `LN${id}`
+              } else if(tds[13].innerHTML.includes(`LN${id}`)) {
+                tds[13].innerHTML = tds[13].innerHTML
+              } else {
+                tds[13].innerHTML = tds[13].innerHTML + ` - LN${id}`
+              }*/
+            })
+
+
+      if(parseInt(tds[14].innerHTML) > parseInt("0") && parseInt(tds[14].innerHTML) < parseInt(tds[11].innerHTML)) {
+
+        document.getElementById(`row${idPedido}`).style.removeProperty('background-color')
+        let row = document.getElementById(`row${idPedido}`)
+        Array.from(row.getElementsByTagName('td')).forEach(function(element) {
+            element.style.removeProperty('background-color')
+          })
+          $(`#row${idPedido}`).css('background-color', '#E5BE01')
+        //$(`#row${idPedido}`).css('background-color', 'white')
+        document.getElementById(idPedido).disabled = false
+      } else if(parseInt(tds[14].innerHTML) <= 0) {
+
+        //document.getElementById(`row${idPedido}`).style.backgroundColor = "#90EE90"
+        $(`#row${idPedido}`).css('background-color', '#90EE90')
+        document.getElementById(idPedido).disabled = true
+      } else {
+
+        document.getElementById(`row${idPedido}`).style.removeProperty('background-color')
+        let row = document.getElementById(`row${idPedido}`)
+        Array.from(row.getElementsByTagName('td')).forEach(function(element) {
+            element.style.removeProperty('background-color')
+          })
+        //$(`#row${idPedido}`).css('background-color', 'white')
+        document.getElementById(idPedido).disabled = false
+
+      }
+
+      $('.show-info').html('<div id="myAlert" class="alert alert-success"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Info! </strong>Se ha eliminado la OF de manera correcta</div>');
+
+      } else {
+        if(dato[1] === 0) {
+            $('.show-info').html('<div id="myAlert" class="alert alert-danger"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Info! </strong>Ha habido un error eliminando la OF</div>');
+          } else {
+            $('.show-info').html(`<div id="myAlert" class="alert alert-danger"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Info! </strong>${dato[1]}</div>`);
+          }
+      }
+    })
+
+  }
+})
+
+}
+
+function showAsignPartialModal(idPedido) {
+  let tds = document.getElementById(`row${idPedido}`).children
+  document.getElementById('apcodigopedido').placeholder = tds[6].innerHTML
+  document.getElementById('apcom').placeholder = tds[8].innerHTML
+  document.getElementById('apcliente').placeholder = tds[10].innerHTML
+  document.getElementById('apfechacarga').placeholder = tds[3].innerHTML
+  document.getElementById('apdescripcion').placeholder = tds[7].innerHTML
+  document.getElementById('paletsPorAsignar').placeholder = tds[14].innerHTML
+    $('#asignPartialModal').modal("show");
+    $('.form-horizontal').show();
+
+    document.getElementById("apbutton").onclick = () => {
+      //HERE
+      document.getElementById(`subtable${idPedido}`) === null? $(`#despl${idPedido}`).trigger('click') : false 
+              partialAsign(idPedido); 
+          };
+}
+
+function addForm() {
+  //COUNT FORMS
+
+  let clickcounter = parseInt($('#click_counter').val())
+  clickcounter+=1
+  $('#click_counter').val(clickcounter)
+  obtenerLineaActual('lineaopt'+clickcounter)
+  $('.forms').append(`<form id="form`+clickcounter+`">
+  <hr>
+  <div class="form-group">
+    <div class="row">
+      <div class="col-sm-6">
+        
+      </div>
+      <div class="col-sm-6">
+        <button id="close`+clickcounter+`" type="button" class="close" onClick="removeForm(`+clickcounter+`)" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="row">
+      <div class="col-sm-6">
+        <label for="sell2`+clickcounter+`">Línea asignada:</label>
+      </div>
+      <div class="col-sm-6">
+          <div class="form-group">
+            <select id="lineaopt`+clickcounter+`" class="form-control" id="sel1">
+              <option id="11" value='11'>Línea 11</option>
+              <option id="131" value='131'>Línea 13A</option>
+              <option id="132" value='132'>Línea 13B</option>
+              <option id="14" value='14'>Línea 14</option>
+              <option id="15" value="15">Línea 15</option>
+              <option id="16" value="16">Línea 16</option>
+              <option id="17" value='17'>Línea 17</option>
+              <option id="18" value='18'>Línea 18</option>
+              <option id="211" value='211'>Línea 21A</option>
+              <option id="212" value='212'>Línea 21B</option>
+              <option id="26" value='26'>Línea 26</option>
+              <option id="35" value="35">Línea 35</option>
+              <option id="36" value="36">Línea 36</option>
+              <option id="38" value="38">Línea 38</option>
+              <option id="39" value="39">Línea 39</option>
+              <option id="999" value="999">Servidor</option>
+            </select>
+          </div>
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="row">
+      <div class="col-sm-6">
+        <label for="exampleInputPassword1">Cantidad</label>
+      </div>
+      <div class="col-sm-6">
+        <input type="hidden" id="originalValuePartial`+clickcounter+`" name="originalValuePartial`+clickcounter+`" min="0" max="100" value="0">
+        <input type="number" id="cant`+clickcounter+`" name="cant`+clickcounter+`" min="0" max="100" value="0">
+      </div>
+    </div>
+  </div>
+</form>`)
+
+$("#cant"+clickcounter).bind('keyup mouseup',delay(function () {
+      let originalValuePartial = parseInt(document.getElementById('originalValuePartial'+clickcounter).value)
+      let sinAsignarMaster = parseInt(document.getElementById('paletsPorAsignar').placeholder)
+      let newAsignacionValue = parseInt(document.getElementById('cant'+clickcounter).value)
+      let actualizedValue = sinAsignarMaster + originalValuePartial - newAsignacionValue
+      document.getElementById('cant'+clickcounter).value = newAsignacionValue
+      document.getElementById('originalValuePartial'+clickcounter).value = newAsignacionValue
+      document.getElementById('paletsPorAsignar').placeholder = actualizedValue             
+    },125));
+
+}
+
+function removeForm(click) {
+  let cantidad = parseInt($('#cant'+click).val())
+  let sinAsignar = parseInt(document.getElementById('paletsPorAsignar').placeholder)
+  document.getElementById('paletsPorAsignar').placeholder = sinAsignar + cantidad
+  $('#form'+click).remove()
+}
+
+function partialAsign(idPedido) {
+  let forms = parseInt($('#click_counter').val())
+
+  let partialAsign = []
+  while(forms!=0) {
+    let form = 'form'+forms
+    if($('#'+form).length) {
+      let lane = $('#lineaopt'+forms).val()
+      let cant = $('#cant'+forms).val()
+      let obj = {'id':forms,'form':form,'lane':lane,'cant':cant, 'idpedido': idPedido}
+      partialAsign.push(obj)
+      removeForm(forms)
+      forms--
+    }else{
+      forms--
+    }
+
+  }
+
+
+  //LLAMADA POST ASIGNA PARCIAL
+  $.ajax({
+    url: 'asignacionparcial',
+    method: 'POST',
+    contentType: "application/json",
+       data: JSON.stringify({partialAsign}),
+    success: function(result) {
+      let {data} = result
+      let {index} = result
+      let {pedidos} = result
+      let erroneos = []
+
+      data.map((dato,i) => {
+        if(dato[0] == "False") {
+
+          pedidos.map((pedido,index) => {
+              if(i == index) {
+                document.getElementById(`${dato[1]}`).disabled = true
+                let tds = document.getElementById(`row${dato[1]}`).children
+                tds[14].innerHTML = pedido[5]
+                tds[16].innerHTML = tds[11].innerHTML - tds[14].innerHTML
+              }
+            })
+          let tds = document.getElementById(`row${idPedido}`).children
+          let subtable = document.getElementById(`subtable${idPedido}`)
+
+            subtable.className = "subtable" 
+ 
+          
+           
+
+          let subrow = document.createElement('tr')
+          Array.from(subtable.getElementsByTagName('tr')).forEach(function(element) {
+              return lastId = element.getAttribute("id")
+            })
+          subrow.setAttribute("id", `${lastId}-${index}`)
+
+          let celdas = dato.slice(2)
+
+          let subcell = document.createElement('td')
+          let ts = document.createTextNode(index[i])
+          subcell.appendChild(ts)
+          subrow.appendChild(subcell)
+          subtable.appendChild(subrow)
+
+          celdas.map(c => {
+            let subcell = document.createElement('td')
+            let ts = document.createTextNode(c)
+            subcell.appendChild(ts)
+            subrow.appendChild(subcell)
+            subtable.appendChild(subrow)
+          })
+
+          let options = document.createElement('td')
+
+          let edit = document.createElement('button')
+          edit.className="btn btn-warning bordered"
+          edit.addEventListener('click', () => showEditModal(idPedido,subrow,index[i]))
+          edit.appendChild(document.createTextNode('Editar'))
+          options.appendChild(edit)
+
+          let delbutt = document.createElement('button')
+          delbutt.className="btn btn-danger bordered btnopts"
+          delbutt.addEventListener('click', () => showDeleteModal(idPedido,subrow,index[i]))
+          delbutt.appendChild(document.createTextNode('Borrar'))
+          options.appendChild(delbutt)
+
+          subrow.appendChild(options)
+
+
+          var table = $('#mytable').DataTable();
+              if(table.cell(tds[13]).data() === "") {
+                table.cell(tds[13]).data(`LN${dato[6]}`)
+              } else if(table.cell(tds[13]).data().includes(`LN${dato[6]}`)) {
+              } else {
+                table.cell(tds[13]).data(table.cell(tds[13]).data() + ` - LN${dato[6]}`)
+              }
+              /*if(tds[13].innerHTML === "") {
+                tds[13].innerHTML = `LN${dato[6]}`
+              } else if(tds[13].innerHTML.includes(`LN${dato[6]}`)) {
+                tds[13].innerHTML = tds[13].innerHTML
+              } else {
+                tds[13].innerHTML = tds[13].innerHTML + ` - LN${dato[6]}`
+              }*/
+
+
+            /*if(parseInt(tds[16].innerHTML) > parseInt("0")) {
+              document.getElementById(`row${idPedido}`).style.backgroundColor = "white"
+              document.getElementById(idPedido).disabled = false
+            } else {
+              document.getElementById(`row${idPedido}`).style.backgroundColor = "#90EE90"
+              document.getElementById(idPedido).disabled = true
+            }*/result
+            if(parseInt(tds[14].innerHTML) > parseInt("0") && parseInt(tds[14].innerHTML) < parseInt(tds[11].innerHTML)) {
+
+        document.getElementById(`row${idPedido}`).style.removeProperty('background-color')
+        let row = document.getElementById(`row${idPedido}`)
+        Array.from(row.getElementsByTagName('td')).forEach(function(element) {
+            element.style.removeProperty('background-color')
+          })
+          $(`#row${idPedido}`).css('background-color', '#E5BE01')
+        //$(`#row${idPedido}`).css('background-color', 'white')
+        document.getElementById(idPedido).disabled = false
+      } else if(parseInt(tds[14].innerHTML) <= 0) {
+
+        document.getElementById(`row${idPedido}`).style.removeProperty('background-color')
+        let row = document.getElementById(`row${idPedido}`)
+        Array.from(row.getElementsByTagName('td')).forEach(function(element) {
+            element.style.removeProperty('background-color')
+          })
+        //document.getElementById(`row${idPedido}`).style.backgroundColor = "#90EE90"
+        $(`#row${idPedido}`).css('background-color', '#90EE90')
+        document.getElementById(idPedido).disabled = true
+      } else {
+        document.getElementById(`row${idPedido}`).style.removeProperty('background-color')
+        let row = document.getElementById(`row${idPedido}`)
+        Array.from(row.getElementsByTagName('td')).forEach(function(element) {
+            element.style.removeProperty('background-color')
+          })
+        //$(`#row${idPedido}`).css('background-color', 'white')
+        document.getElementById(idPedido).disabled = false
+
+      }
+
+        } else {
+          erroneos.push(index[i])
+        }
+      })
+
+      if(erroneos.length == 0) {
+        $('.show-info').html('<div id="myAlert" class="alert alert-success"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Info! </strong>Se han asignado las OFs de manera correcta</div>');
+      } else {
+        $('.show-info').html(`<div id="myAlert" class="alert alert-danger"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Info! </strong>Ha habido un error asignando alguna de las OFs</div>`);
+      
+      }
+      adClose()
+     }
+  })
+
+
+}
+
+function clearFilters() {
+  var table = $('#mytable').DataTable();
+    table.state.clear();
+    window.location.reload();
+}
+
+function refresh() {
+  $('#recargaForzadaModal').modal("show");
+  $('.form-horizontal').show();
+  $.ajax({
+    url: 'refresh',
+    method: 'POST',
+    contentType: "application/json",
+       data: JSON.stringify({partialAsign}),
+    success: function(result) {
+      location.reload()
+    }
+  })
+}
+
+$('#showAll').on('click', function(){
+    let table = $('#mytable').DataTable()
+    table.rows().every(function(){
+        if(!this.child.isShown()){
+            this.child(format(this.data())).show()
+            $(this.node()).addClass('shown')
+
+            this.child.hide()
+            $(this.node()).removeClass('shown')
+        }
+    })
+})
+
+
+
+
+
+  </script>
+

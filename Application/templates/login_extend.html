@@ -1,0 +1,332 @@
+﻿{% extends "layout.html" %}
+{% block body %}
+{% with messages = get_flashed_messages()%}
+{%if messages %}
+
+{%for message in messages%}
+	<div class="alert alert-dismissible alert-info">
+		<button type="button" class="close" data-dismiss="alert">&times;</button>
+	  	<strong>Mensaje del Servidor: </strong>Usuario <a href="#" class="alert-link">{{message}}</a>, revise que la información esté correcta en la tabla inferior.
+	</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<!--<script src="{{url_for('static', filename='js/jquery-ui-1.12.1/jquery-ui-1.12.1/jquery-ui.min.js')}}"></script>
+<script src="{{url_for('static', filename='js/jquery-ui-touch.min.js')}}"></script>-->
+<script src="{{url_for('static', filename='js/sortable.js')}}"></script>
+<link rel="stylesheet" href="{{url_for('static', filename='css/login_extend.css')}}"/>
+
+<p style="text-align:center; padding-top: 35px; padding-bottom: 35px;"><img src="{{url_for('static', filename='img/LogoCliente.jpg')}}" width="50%" alt="Logo cliente"></p>
+
+<div class="row">
+	<div class="col-md-3"></div>
+		<div class="col-md-4">
+			<form action="/login" method="POST">
+				<div class="form-group">
+			     	<h3>Código de Usuario</h3>
+			     	<input type="password" class="form-control"  placeholder="Número de referencia de usuario" name="usercode">
+					<select class="custom-select" name="zona">
+					<option selected=""  value="0">Zona Mixta</option>
+					<option value="1">Zona A</option>
+					<option value="2">Zona B</option>
+					</select>
+			    </div>
+			</form>
+		</div>
+	<div class="col-md-3"></div>
+</div>
+
+<div class="jumbotron">
+	<div class="row">
+		<div class="col-md-2"></div>
+		<!--<div class="col-md-6">
+			<h3>Zona Mixta</h3>
+			<table id="table-draggable1" class="table table-hover">
+				<tbody class="connectedSortable">
+					<tr class="table-primary">
+						<th scope="col">Nombre Operario</th>
+						<th scope="col">Línea</th>
+						<th scope="col">Log Out</th>
+					</tr>
+				
+					{% for login_m in logs_M %}
+					<tr>
+						<td>{{ login_m.5 }}</td>
+						<td>{{ login_m.4 }}</td>
+						<td style="display:none;">{{ login_m.0 }}</td>
+						<td style="display:none;">{{ login_m.1 }}</td>
+						<td style="display:none;">{{ login_m.2 }}</td>
+						<td><a href="/logout/{{login_m.0}}" class="btn btn-danger">Salir</a> </td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>-->
+
+		<div class="col-md-6">
+			<h3>Zona Mixta</h3>
+				<div class="table-primary tableheader">
+					<span scope="col">Nombre Operario</span>
+					<span scope="col">Línea</span>
+					<span scope="col">Log Out</span>
+				</div>
+				<div id="simpleList1">
+					{% for login_m in logs_M %}
+					<div class="tablebody">
+						<span>{{ login_m.5 }}</span>
+						<span>{{ login_m.4 }}</span>
+						<span style="display:none;">{{ login_m.0 }}</span>
+						<span style="display:none;">{{ login_m.1 }}</span>
+						<span style="display:none;">{{ login_m.2 }}</span>
+						<span><a href="/logout/{{login_m.0}}" class="btn btn-danger">Salir</a> </span>
+					</div>
+					{% endfor %}
+				</div>
+
+		</div>
+		<div class="col-md-2"></div>
+	</div>
+	<div class="row">
+		<!--<div class="col-md-6">
+			<h3>Zona A</h3>
+			<table id="table-draggable2" class="table table-hover">
+				<tbody class="connectedSortable">
+					<tr class="table-primary">
+						<th scope="col">Nombre Operario</th>
+						<th scope="col">Línea</th>
+						<th scope="col">Log Out</th>
+					</tr>
+
+					{% for login_a in logs_A %}
+					<tr>
+						<td>{{ login_a.5 }}</td>
+						<td>{{ login_a.4 }}</td>
+						<td style="display:none;">{{ login_a.0 }}</td>
+						<td style="display:none;">{{ login_a.1 }}</td>
+						<td style="display:none;">{{ login_a.2 }}</td>
+						<td><a href="/logout/{{login_a.0}}" class="btn btn-danger">Salir</a></td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>-->
+
+		<div class="col-md-6">
+			<h3>Zona A</h3>
+			<div class="table-primary tableheader">
+				<span scope="col">Nombre Operario</span>
+				<span scope="col">Línea</span>
+				<span scope="col">Log Out</span>
+			</div>
+				<div id="simpleList2">
+					{% for login_a in logs_A %}
+					<div class="tablebody">
+						<span>{{ login_a.5 }}</span>
+						<span>{{ login_a.4 }}</span>
+						<span style="display:none;">{{ login_a.0 }}</span>
+						<span style="display:none;">{{ login_a.1 }}</span>
+						<span style="display:none;">{{ login_a.2 }}</span>
+						<span><a href="/logout/{{login_a.0}}" class="btn btn-danger">Salir</a> </span>
+					</div>
+					{% endfor %}
+				</div>
+
+		</div>
+
+		<!--<div class="col-md-6">
+			<h3>Zona B</h3>
+			<table id="table-draggable3" class="table table-hover">
+				<tbody class="connectedSortable">
+					<tr class="table-primary">
+						<th scope="col">Nombre Operario</th>
+						<th scope="col">Línea</th>
+						<th scope="col">Log Out</th>
+					</tr>
+					{% for login_b in logs_B %}
+					<tr>
+						<td>{{ login_b.5 }}</td>
+						<td>{{ login_b.4 }}</td>
+						<td style="display:none;">{{ login_b.0 }}</td>
+						<td style="display:none;">{{ login_b.1 }}</td>
+						<td style="display:none;">{{ login_b.2 }}</td>
+						<td><a href="/logout/{{login_b.0}}" class="btn btn-danger">Salir</a> </td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>-->
+
+		<div class="col-md-6">
+			<h3>Zona B</h3>
+			<div class="table-primary tableheader">
+				<span scope="col">Nombre Operario</span>
+				<span scope="col">Línea</span>
+				<span scope="col">Log Out</span>
+			</div>
+				<div id="simpleList3">
+					{% for login_b in logs_B %}
+					<div class="tablebody">
+						<span>{{ login_b.5 }}</span>
+						<span>{{ login_b.4 }}</span>
+						<span style="display:none;">{{ login_b.0 }}</span>
+						<span style="display:none;">{{ login_b.1 }}</span>
+						<span style="display:none;">{{ login_b.2 }}</span>
+						<span><a href="/logout/{{login_b.0}}" class="btn btn-danger">Salir</a> </span>
+					</div>
+					{% endfor %}
+				</div>
+
+		</div>
+
+	</div>
+
+	<div class="row" style="justify-content: center;">
+		<div class="col-md-2"></div>
+			<div class="col-md-3">
+				<button type="submit" name ="incidencia" class="btn btn-warning"  onclick="getStates()">Mover operarios</button>
+			</div>
+
+			<div class="col-md-3">
+				<button type="submit" name ="incidencia" class="btn  btn-danger"  onclick="window.location='/logout_all';">Salir todos</button>
+			</div>
+
+		</div>
+	</div>
+
+
+</div>
+{% if error %}
+    <p class="error"><strong>Error:</strong> {{ error }}
+{% endif %}
+
+<script>
+
+	$(document).ready(function() {
+		/*$(".connectedSortable").sortable({
+			connectWith: ".connectedSortable",
+			items: "> tr:not(:first)",
+			cursor: "move"
+		}).draggable()*/
+		Sortable.create(simpleList1, {
+			group: 'tables',
+			animation: 150 /* options */ })
+		
+		Sortable.create(simpleList2, {
+			group: 'tables',
+			animation: 150 /* options */ })
+
+			Sortable.create(simpleList3, {
+			group: 'tables',
+			animation: 150 /* options */ })
+	})
+
+	function getStates() {
+		let rows1 = []
+        let obj1 = {}
+        //let table1Size = document.getElementById("table-draggable1").rows.length;
+		let tablemixta = document.getElementById("simpleList1")
+		let table1Elements = tablemixta.getElementsByTagName('div')
+		const table1Size = table1Elements.length
+
+
+        //let table1rows = document.getElementById("table-draggable1").rows
+		let table1 = []
+        for(let i = 0; i < table1Size; i++) {
+			let obj = {operario: table1Elements[i].children[0].innerHTML, linea: table1Elements[i].children[3].innerHTML, id:table1Elements[i].children[2].innerHTML, operarioid: table1Elements[i].children[4].innerHTML}
+            table1.push(obj)
+        }
+
+
+        
+        /*rows1.map(r1 => {
+            obj1 = {...obj1, operario: r1[0].innerHTML, linea: r1[3].innerHTML, id: r1[2].innerHTML, operarioid:  r1[4].innerHTML}
+            table1.push(obj1)
+        })*/
+
+        //
+
+        /*let rows2 = []
+        let obj2 = {}
+        let table2Size = document.getElementById("table-draggable2").rows.length;
+        let table2rows = document.getElementById("table-draggable2").rows
+
+        for(let i = 1; i < table2Size; i++) {
+            rows2.push(table2rows[i].cells)
+        }
+
+        let table2 = []
+        rows2.map(r2 => {
+            obj2 = {...obj2, operario: r2[0].innerHTML, linea: r2[3].innerHTML, id: r2[2].innerHTML, operarioid:  r2[4].innerHTML}
+            table2.push(obj2)
+        })*/
+
+		let rows2 = []
+        let obj2 = {}
+        //let table1Size = document.getElementById("table-draggable1").rows.length;
+		let tablea = document.getElementById("simpleList2")
+		let table2Elements = tablea.getElementsByTagName('div')
+		const table2Size = table2Elements.length
+
+
+        //let table1rows = document.getElementById("table-draggable1").rows
+		let table2 = []
+        for(let i = 0; i < table2Size; i++) {
+			let obj = {operario: table2Elements[i].children[0].innerHTML, linea: table2Elements[i].children[3].innerHTML,id:table2Elements[i].children[2].innerHTML, operarioid: table2Elements[i].children[4].innerHTML}
+            table2.push(obj)
+        }
+
+        //
+
+        /*let rows3 = []
+        let obj3 = {}
+        let table3Size = document.getElementById("table-draggable3").rows.length;
+        let table3rows = document.getElementById("table-draggable3").rows
+
+        for(let i = 1; i < table3Size; i++) {
+            rows3.push(table3rows[i].cells)
+        }
+
+        let table3 = []
+        rows3.map(r3 => {
+            obj3 = {...obj3, operario: r3[0].innerHTML, linea: r3[3].innerHTML, id: r3[2].innerHTML, operarioid:  r3[4].innerHTML}
+            table3.push(obj3)
+        })*/
+
+		let rows3 = []
+        let obj3 = {}
+        //let table1Size = document.getElementById("table-draggable1").rows.length;
+		let tableb = document.getElementById("simpleList3")
+		let table3Elements = tableb.getElementsByTagName('div')
+		const table3Size = table3Elements.length
+
+
+        //let table1rows = document.getElementById("table-draggable1").rows
+		let table3 = []
+        for(let i = 0; i < table3Size; i++) {
+			let obj = {operario: table3Elements[i].children[0].innerHTML, linea: table3Elements[i].children[3].innerHTML,id:table3Elements[i].children[2].innerHTML, operarioid: table3Elements[i].children[4].innerHTML}
+            table3.push(obj)
+        }
+
+		let obj = {"zonaM" : table1, "zonaA" : table2, "zonaB" : table3 }
+		console.log(obj)
+
+		$.ajax({
+			url: 'move',
+			method: 'POST',
+			//data: obj,
+			contentType: "application/json",
+			data:JSON.stringify({obj}),
+			success: function (result) {
+				console.log(result)
+				if(result === 'true'){
+					location.reload()
+				}
+
+
+			}
+		})
+	}
+</script>
+{% endblock %}
+

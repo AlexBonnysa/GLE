@@ -1,0 +1,580 @@
+{% extends "layout.html" %}
+
+{% block head %}
+<style>
+.myAlert-bottom , .myAlert-top, .myAlert-middle {
+    position: fixed;
+    top: 20px;    
+    left:2%;
+    width: 96%;
+}
+
+.alert{
+    display: none;
+}
+#select_oper select{
+    height: 100% !important;
+    width: 90% !important;
+    float: left;
+}
+</style>
+
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="row">            
+            <div class="col-md-3">
+                <select id="fichado_turno" style="height: 100%; width: 100%; font-size:150%;" >
+                    <option value="-1">Selecciona Turno: </option>
+                    <option value="1">Mañana</option>
+                    <option value="2">Tarde</option>
+                    <option value="3">Noche</option>
+                </select>
+            </div>
+            <div class="col-md-3" >
+                <input id="fichado_date" type="date" style="height: 100%; width: 100%; font-size:150%;"/>
+            </div>
+            <div class="col-md-6">                    
+                <div class="input-group">
+                    <input type="file" accept=".ods" id="tr_form_sub" name="tr_form_sub" class="form-control" />
+                    <span class="input-group-btn">
+                        <button id="tr_im_bt" class="btn btn-default" type="button">Procesar</button>
+                    </span>
+                </div>
+            </div>                
+            
+       </div>
+       <div class="row">
+            <div class="col-md-12">
+                <div id="resultado">                                       
+                </div>
+            </div>  
+       </div>
+    </div>
+    <div class="myAlert-bottom alert alert-danger">        
+        <strong>¡CUIDADO!</strong> <span id= "alerta_operario"></span>
+    </div>
+    <div id ="alarma-oper"  class="myAlert-middle alert alert-danger">        
+        
+    </div>
+    <div class="myAlert-top alert alert-success" role="alert">      
+        <strong>¡CORRECTO!</strong> <span id= "alerta_operario_success"></span>
+    </div>
+    
+    <div class="modal fade" id="modal_oper" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Información</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div id="modal_info" class="modal-body">
+              ...
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+              <button id="ce_im_bt" class="btn btn-default" type="button">Aceptar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    
+    
+
+
+<script>
+    $(document).ready(function(e) {
+        
+        fechaMinimaActual()
+
+        function fechaMinimaActual()
+        {
+            var date = new Date();
+            var dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000 ))
+                    .toISOString()
+                    .split("T")[0];            
+            document.getElementById("fichado_date").min= dateString;
+        }
+        $("#tr_im_bt").click(function(e) {
+            comprobarFecha() 
+            if (comprobarDatosFormularioInicial())
+                subirFichero()           
+
+        });        
+        $(document).on('click','.btn.btn-default.eventual',function(){           
+            $(this).siblings(".estilo-input").val("0") 
+        });
+
+        $(document).on('click','#ac_im_bt',function(){
+            if(ComprobarDatos())
+            {
+                personas = getElementsTable()
+                if (personas !== null)
+                {  
+                    enviarElementosDelaTablaAlBack(personas)
+                }
+            }
+        });
+        $(document).on('click','#ce_im_bt',function(){
+            $('#modal_oper').modal('hide')
+            borrarElementos()
+        });
+        $(document).on('click','#ca_im_bt',function(){
+            limpiarFormularios()
+        });
+
+        $(document).on('click','#lm_im_bt',function(){
+            limpiarFormularios()
+        });
+
+        $('#tr_form_sub').change(function(){
+            var fileName = $('#tr_form_sub').val()            
+            var idxDot = fileName.lastIndexOf(".") + 1;
+            var extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
+            if (extFile=="ods" ){
+                // No hacemos nada
+            }else{
+                mensajeAlarma("Solo están permitidos archivos ODS")
+                $('#tr_form_sub').val("");
+            }  
+        });          
+       
+        function comprobarDatosFormularioInicial()
+        {
+            ok = true
+            mensaje = ""
+            if($("#fichado_date").val()=="")
+            {
+                mensaje += " <p> - La fecha no puede estar vacia</p> "
+                ok = false
+                
+                
+            }
+            else
+            {
+                
+                resultadoFecha = comprobarFecha()
+                if (resultadoFecha==-2)
+                {
+                    mensaje += " <p> La fecha no puede ser menor  </p> "
+                    ok = false
+                }
+                else if (resultadoFecha==-3)
+                {
+                    mensaje += " <p> Ha habido un error en la llamada  </p> "
+                    ok = false
+                }
+                else if (resultadoFecha==0)
+                {
+                    var resultadoTurno = comprobarTurnoActual()                    
+                    if(comprobarTurnoActual() ==0 )
+                    {
+                        mensaje += " <p> El turno no esta disponible porque ya ha comenzado  </p> "
+                        ok = false
+                    } 
+                }
+                  
+            }          
+            if($("#fichado_turno").val()==-1)
+            {
+                mensaje += "<p> - Hay que seleccionar un turno </p> "
+                
+                ok = false
+            }
+            if($("#tr_form_sub").val()=="")
+            {
+                mensaje += "<p> - Hay que introducir un archivo ODS </p> "
+                
+                ok = false
+            }
+            if (!ok)            
+                mensajePersonalizado(mensaje)
+            
+            return ok
+        }
+        function comprobarTurnoActual()
+        {
+            resultado = -1
+            let envio = {"fecha":$("#fichado_date").val(), "turno": $("#fichado_turno").val() }             
+            $.ajax({
+                url: 'comprobarTurno',
+                method: 'POST',
+                contentType: "application/json",
+                dataType: "json",
+                async: false,
+                data: JSON.stringify(envio),
+                success: function(result) {
+                    resultado = parseInt(result)                    
+                }
+            })
+            return resultado
+        }
+
+        function comprobarFecha()
+        {
+            resultado = -3
+            let envio = {"fecha":$("#fichado_date").val() }                        
+            $.ajax({
+                url: 'comprobarFecha',
+                method: 'POST',
+                contentType: "application/json",
+                dataType: "json",
+                async: false,
+                data: JSON.stringify(envio),
+                success: function(result) {
+                    resultado = parseInt(result)
+                    
+                }
+            })
+            return resultado
+        }
+
+        function limpiarFormularios()
+        {
+            $("#resultado").html("")
+            $("#fichado_date").val("")
+            $('#fichado_turno').val(-1);
+            $('#tr_form_sub').val("");
+            $( "#fichado_date" ).prop( "disabled", false );
+            $( "#fichado_turno" ).prop( "disabled", false );
+        }
+
+        function mensajePersonalizado(mensaje)
+        {
+            $("#alarma-oper").html(mensaje)
+            $(".myAlert-middle").show();
+            setTimeout(function(){
+                $(".myAlert-middle").hide(); 
+            }, 5000);
+        }
+
+        function mensajeAlarma(mensaje)
+        {
+            $("#alerta_operario").text(mensaje)
+            $(".myAlert-bottom").show();
+            setTimeout(function(){
+                $(".myAlert-bottom").hide(); 
+            }, 5000);
+        }
+
+        function mensajeCorrecto(mensaje)
+        {
+            $("#alerta_operario_success").text(mensaje)
+            $(".myAlert-top").show();
+            setTimeout(function(){
+                $(".myAlert-top").hide(); 
+            }, 5000);
+        }
+
+        function borrarElementos()
+        {
+            var data = new FormData();
+            var fecha = $("#fichado_date").val()
+            var turno = $("#fichado_turno").val()            
+            data.append("fecha", fecha)
+            data.append("turno", turno)            
+            $.ajax({
+                
+                url:"borrarDatos",
+                dataType: "json",
+                type:"POST",
+                contentType:false,
+                data:data,
+                success: function(data){
+                    mensajeCorrecto("Se ha borrado los fichados correctamente")
+                    crearTabla(data)
+                    deshabilitarBotones()
+                },
+                processData:false,
+                cache:false			
+			
+		    });           
+        }
+       
+        function deshabilitarBotones()
+        {
+            $( "#fichado_date" ).prop( "disabled", true );
+            $( "#fichado_turno" ).prop( "disabled", true );
+        }
+
+        function resetearBotones()
+        {
+            $( "#fichado_date" ).prop( "disabled", false );
+            $( "#fichado_turno" ).prop( "disabled", false );
+        }
+
+        function  getElementsTable()
+        {
+            personas = []
+            var fecha = $("#fichado_date").val()
+            var turno = $("#fichado_turno").val()
+            $('#table-oper tr').each(function(index,element){
+                
+                if (index>0 && index < $('#table-oper tr').length - 1)
+                {
+                    nombre= $(this).children().eq(0).html()
+                    linea= $(this).children().eq(1).html()
+                    codigo= $(this).children().eq(2).find("input[type='text']").val()
+                    if (codigo==null)
+                        codigo = $(this).children().eq(2).html()
+                    const persona = {}
+                    persona["nombre"] = $(this).children().eq(0).html()
+                    persona["linea"] = $(this).children().eq(1).html()
+                    persona["codigo"] = codigo
+                    resultado = comprobarCodigo(codigo)
+                    if (resultado.ok==true){
+                        persona["id"] = resultado.id 
+                        persona["nif"] = resultado.dni
+                    }else
+                    {
+                        mensajeAlarma("El código :"+codigo+" no existe en la bbdd ")
+                        return null
+                    }
+                    persona["fecha"] = fecha;
+                    persona["turno"] = turno;
+                    personas.push(persona)
+                }                              
+
+            });
+
+            
+            return personas
+        }
+
+        function enviarElementosDelaTablaAlBack(personas)
+        {
+            
+		    $.ajax({
+                url: 'insertarOperarios',
+                method: 'POST',
+                contentType: "application/json",
+                data: JSON.stringify(personas),
+                success: function(result) {
+                    mensajeCorrecto("Se ha introducido "+result+" correctamente de los fichados")
+                    limpiarFormularios()
+                    
+                }
+            })
+        }
+        
+        function comprobarCodigo(codigo)
+        {
+            let resultado=""
+            let envio = {"codigo":codigo}           
+            $.ajax({
+                url: 'comprobarCodigo',
+                method: 'POST',
+                contentType: "application/json",
+                async: false,
+                dataType: "json",
+                data: JSON.stringify(envio),
+                success: function(result) {                    
+                    resultado= result
+                }
+            })
+            return resultado;
+
+           
+
+        }
+        function comprobaryListarDuplicadosEnArray(array)
+        {
+            let bool = true
+            const count = {}
+            const result = []
+
+            array.forEach(item => {
+                if (count[item]) {
+                count[item] +=1
+                return
+                }
+                count[item] = 1
+            })
+
+            for (let prop in count){
+                if (count[prop] >=2){
+                    result.push(prop)
+                }   
+            }
+
+            if (result.length>0)
+            {
+                valoresRepetidos = result.join(" , ");
+                mensajeAlarma("No pueden haber repetidos: "+ valoresRepetidos)
+                bool = false
+            }
+            return bool
+        }
+
+       
+
+        function checkValuesNine(array)
+        {
+            let newArray = array.filter( (item, index) => {
+                if(item == "9999"){
+                    return item;
+                }
+            });
+        }
+
+        function ComprobarDatos()
+        {
+            const valores = [];
+            let check = true;            
+            var i = 1
+            $("#table-oper .datos_gen").each(function() {
+                var data1 = $(this).find("input[type='text']").val()
+                if (data1==null){
+                    if (data1 != "0")
+                    {
+                        valores.push($(this).html())
+                    }                
+                    
+                }                    
+                else{
+                    if (data1==""){                        
+                        mensajeAlarma("La linea :"+i+" no puede estar vacia ")
+                        check = false
+                        return check
+                                            
+                    }
+                    else{
+                        if (data1 != "0"){
+                            valores.push(data1)
+                        }  
+                        
+                    }
+                }
+                i++
+    
+            });
+            if(check)
+                check =comprobaryListarDuplicadosEnArray(valores)
+                              
+            return check
+        }
+
+        function lanzarBotonesRespuesta()
+        {
+
+            
+            $('#modal_info').html('Hay fichados para el dia señalado . ¿Desea proseguir borrando lo anterior')
+            $('#modal_oper').modal('show')
+            
+             
+        }
+
+        function subirFichero(){
+            var file = $("#tr_form_sub")[0].files[0];
+            var data = new FormData();
+            var fecha = $("#fichado_date").val()
+            var turno = $("#fichado_turno").val()
+            data.append("archivo",file)
+            data.append("fecha", fecha)
+            data.append("turno", turno)
+            $.ajax({
+                
+                url:"checkValores",
+                dataType: "html",
+                type:"POST",
+                contentType:false,
+                data:data,
+                success: function(data){                
+                    
+                    if (data == '0')
+                    {
+                        getOperator()
+                        deshabilitarBotones()
+                    }
+                    else if (data == '-1')
+                        mensajeAlarma("Ha habido un problema con el formato del fichero ")
+                    else
+                        lanzarBotonesRespuesta()                   
+                    
+                },
+                processData:false,
+                cache:false			
+			
+		    });
+        }
+        
+        function getOperator(){            
+            var data = new FormData();
+            var turno = $("#fichado_turno").val()
+            data.append("turno", turno)
+            $.ajax({
+                
+                url:"cargarDatos",
+                dataType: "json",
+                type:"POST",
+                contentType:false,
+                data:data,
+                success: function(data){                    
+                    crearTabla(data)
+
+                    
+                },
+                processData:false,
+                cache:false	               		
+			
+		    });
+        }
+
+
+        function crearTabla(datos) {
+            var fecha = new Date($("#fichado_date").val());
+            var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+
+            var linea=""
+            linea +="<p> Turno <strong> "+$("#fichado_turno option:selected").html()+"</strong>  Fecha: <strong> "+fecha.toLocaleDateString("es-ES", options)+"</strong> <p>"
+            linea +="<p> Por favor introduce el número de tarjeta faltante<p>"
+            linea +="<p>y pulsa el botón de CONTINUAR<p>"
+            linea += '<table id = "table-oper" class="table">'
+                linea += '<tr>'
+                    linea += '<th>'
+                        linea += 'Nombre'
+                    linea += '</th>'
+                    linea += '<th>'
+                        linea += 'Linea'
+                    linea += '</th>'
+                    linea += '<th>'
+                        linea += 'Código'
+                    linea += '</th>'                    
+                linea += '</tr>'
+               
+                    datos.forEach(function(obj){
+                        linea += '<tr>' 
+                            linea += '<td>'
+                                linea += obj.nombre
+                            linea += '</td>'
+                            linea += '<td>'
+                                linea += obj.linea
+                            linea += '</td>'
+                            linea += '<td class = "datos_gen">'
+                                if (obj.codigo==="0"){
+                                    linea += '<input class="estilo-input" type="text">'
+                                    linea +='<button style= "margin-left: 5px" class="btn btn-default eventual" type="button">Eventual</button>'
+                                }
+                                else
+                                    linea += obj.codigo
+                            linea += '</td>'                            
+                        linea += '</tr>'
+                    });
+                    linea += '<tr>'
+                        linea += '<td></td>'
+                        linea += '<td></td>' 
+                        linea += '<td style="text-align:center; vertical-align:middle"><button id="ac_im_bt" class="btn btn-default" type="button">Continuar</button><button style="margin-left: 10px" id="lm_im_bt" class="btn btn-default" type="button">Limpiar</button></td>'                                 
+                        
+                    linea += '</tr>'
+                
+            linea += '</table>'                        
+            $("#resultado").html(linea);
+        }
+    });
+</script>
+
+{% endblock %}

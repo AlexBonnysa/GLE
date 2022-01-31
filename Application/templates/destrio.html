@@ -1,0 +1,83 @@
+﻿{% extends "layout.html" %}
+{% block body %}
+{% with messages = get_flashed_messages()%}
+{%if messages %}
+
+{%for message in messages%}
+	<div class="alert alert-dismissible alert-info">
+		<button type="button" class="close" data-dismiss="alert">&times;</button>
+	  	<strong>Mensaje del Servidor: </strong> <a href="#" class="alert-link">{{message}}</a>, revise que la información esté correcta en la tabla inferior.
+	</div>
+{% endfor %}
+
+{% endif %}
+{% endwith %}
+
+<H1 align="center" class="col-md-12">Destríos</H1>
+
+<div class="jumbotron">
+  <h3>Listado de OF Abiertas</h3>
+  <table class="table table-hover">
+    <thead>
+      <tr class="table-primary">
+        <th scope="row">Código</th>
+        <th scope="col">Línea</th>  
+        <th scope="col">COM</th>          
+        <th scope="col">Pallets realizados</th>
+        <th scope="col">Unidades</th>
+        <th scope="col">Kg de Destrío</th>
+        <th scope="col">Editar</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for weigth in weigths %}
+      <tr>
+        <td>{{ weigth.4 }}</td>
+        <td>{{ weigth.5 }}</td>
+        <td>{{ weigth.6 }}</td>
+        <td>{{ weigth.3 }}</td>
+        <td>{{ weigth.7 }}</td>
+        <td>{{ weigth.8 /1000 }}</td>
+        <td><button type="button" class="btn btn-warning" data-toggle="modal" data-target="#Editmodal">Editar</button></td>
+      </tr> 
+    </tbody>
+  </table>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="Editmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="EditmodallLabel">Destríos</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form class="form-group" action="/modweight" method="POST" >
+          <input type="hidden" name="id"  value="{{ weigth.0 }}" readonly><br><br>
+          <label ><b>Código de fabricación:</b> {{ weigth.4 }}</label>
+          <input type="hidden" name="codigo"  value="{{ weigth.4 }}" readonly><br><br>
+
+          <label><b>COM:</b> {{ weigth.6 }}</label>
+          <input type="hidden" name="com"  value="{{ weigth.6 }}" readonly><br><br>
+
+          <label><b>Kg de Destrío Actuales:</b> {{ weigth.8 /1000 }}</label>
+          <input type="hidden" name="peso" value="{{ weigth.8 }}"><br><br>
+
+          <label><b>Añadir Kg de Destrío:</b> </label>
+          <input type="number"  step="0.01" name="add"><br><br>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            <button type="submit"  class="btn btn-primary">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+{% endblock %}
